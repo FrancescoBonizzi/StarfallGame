@@ -2,7 +2,7 @@
 
 <a href='https://play.google.com/store/apps/details?id=com.francescobonizzi.starfall&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1' style='float:left;'><img width="180" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
-<a href='https://www.microsoft.com/store/apps/9MW4T75WZR28?ocid=badge'><img src='https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png' alt='English badge' style='height: 60px;'/></a>
+<a href='https://www.microsoft.com/store/apps/9MW4T75WZR28?ocid=badge'><img src='https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png' alt='English badge' height="60px"/></a>
 
 You are a star fallen on the Earth. You find yourself in a dark forest looking for the way home. You are very weak. Catch all the glows to get your energy back and fly. But careful, avoid the black holes along the way trying to absorb you!
 
