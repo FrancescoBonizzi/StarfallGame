@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="2047FrancescoBonizzi.StarfallFree" Publisher="CN=24FC325C-4F10-438B-A2D9-03E8E5E1D100" Version="1.1.4.0" />
+  <Identity Name="2047FrancescoBonizzi.StarfallFree" Publisher="CN=24FC325C-4F10-438B-A2D9-03E8E5E1D100" Version="1.1.5.0" />
   <mp:PhoneIdentity PhoneProductId="ffb5f31d-5db8-4954-b097-fd57d3910671" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Starfall Free</DisplayName>
-    <PublisherDisplayName>flowsoft games</PublisherDisplayName>
+    <PublisherDisplayName>Francesco Bonizzi</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
