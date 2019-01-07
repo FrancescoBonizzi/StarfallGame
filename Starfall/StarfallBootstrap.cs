@@ -113,8 +113,8 @@ namespace Starfall.MonogameBootstrap
                 _matrixScaleProvider.VirtualWidth / 2 - 350, 24, 700, _matrixScaleProvider.VirtualHeight - 60);
 
             var rateMeDialog = new RateMeDialog(
-                launchesUntilPrompt: 1, //2
-                maxRateShowTimes: 100, //2
+                launchesUntilPrompt: 2,
+                maxRateShowTimes: 2,
                 rateAppUri: _rateMeUri,
                 dialogDefinition: dialogDefinition,
                 font: loader.Font,
@@ -138,7 +138,7 @@ namespace Starfall.MonogameBootstrap
                 buttonsTextColor: new Color(255, 234, 135),
                 titlePositionOffset: new Vector2(dialogDefinition.Width / 2, 80f),
                 buttonTextPadding: 40f,
-                titlePadding: 130f);
+                titlePadding: 160f);
             
             var menuFactory = new Func<MainMenuPage>(
                 () => new MainMenuPage(

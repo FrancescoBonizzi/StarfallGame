@@ -212,6 +212,7 @@
     <Content Include="Assets\_TextureProject\Export\rewardOro.png" />
     <Content Include="Assets\_TextureProject\Export\scorebg.jpg" />
     <Content Include="Assets\_TextureProject\Icon512x512.png" />
+    <Content Include="Assets\_TextureProject\Icon72x72.png" />
     <Content Include="Assets\_TextureProject\Protips\TIPS_glow.jpg" />
     <Content Include="Assets\_TextureProject\Protips\TIPS_life.jpg" />
     <Content Include="Assets\_TextureProject\Protips\TIPS_timejump.jpg" />
@@ -316,6 +317,7 @@
     <Folder Include="Assets\ContentBuilder\bin\Background\" />
     <Folder Include="Assets\ContentBuilder\obj\Background\" />
     <Folder Include="Assets\ContentBuilder\obj\MenuProject\" />
+    <Folder Include="Assets\_TextureProject\Screenshots\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FbonizziMonoGame, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
