@@ -21,11 +21,11 @@ Features:
 
 # Screenshots
 
-<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/1.png" width="350">
+<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/1.png" width="500">
 
-<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/2.png" width="350">
+<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/2.png" width="500">
 
-<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/3.png" width="350">
+<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/3.png" width="500">
 
 ---
 
