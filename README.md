@@ -1,6 +1,6 @@
 # ![Logo](Starfall/Assets/_TextureProject/Icon72x72.png) Starfall
 
-<a href='https://play.google.com/store/apps/details?id=com.francescobonizzi.starfall&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1' style='float:left;'><img width="180" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+<a href='https://play.google.com/store/apps/details?id=com.francescobonizzi.starfall&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1' style='float:left;'><img style='float:left;' width="180" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
 <a href='https://www.microsoft.com/store/apps/9MW4T75WZR28?ocid=badge'><img src='https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png' alt='English badge' height="60px"/></a>
 
