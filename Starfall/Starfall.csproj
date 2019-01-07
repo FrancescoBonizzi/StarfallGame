@@ -220,6 +220,9 @@
     <Content Include="Assets\_TextureProject\Protips\TIP_2.jpg" />
     <Content Include="Assets\_TextureProject\Protips\TIP_3.jpg" />
     <Content Include="Assets\_TextureProject\Protips\TIP_4.jpg" />
+    <None Include="Assets\_TextureProject\Screenshots\1.png" />
+    <None Include="Assets\_TextureProject\Screenshots\2.png" />
+    <None Include="Assets\_TextureProject\Screenshots\3.png" />
     <Content Include="Assets\_TextureProject\Slides\s1.jpg" />
     <Content Include="Assets\_TextureProject\Slides\s2.jpg" />
     <Content Include="Assets\_TextureProject\Slides\s3.jpg" />
@@ -317,7 +320,6 @@
     <Folder Include="Assets\ContentBuilder\bin\Background\" />
     <Folder Include="Assets\ContentBuilder\obj\Background\" />
     <Folder Include="Assets\ContentBuilder\obj\MenuProject\" />
-    <Folder Include="Assets\_TextureProject\Screenshots\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FbonizziMonoGame, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
