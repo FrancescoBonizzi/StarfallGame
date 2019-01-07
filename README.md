@@ -19,12 +19,15 @@ Features:
 - Original soundtrack
 - Handmade graphic
 
+# Screenshots
+
 <img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/1.png" width="350">
 
 <img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/2.png" width="350">
 
 <img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/3.png" width="350">
 
+---
 
 The game is entirely **free** and open source: I didn't use any third party library to track or log user events. There are no ads too.
 
