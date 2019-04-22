@@ -56,10 +56,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FbonizziMonoGame, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FbonizziMonoGame.1.0.8-alpha\lib\monoandroid81\FbonizziMonoGame.dll</HintPath>
+      <HintPath>..\packages\FbonizziMonoGame.1.0.1\lib\monoandroid81\FbonizziMonoGame.dll</HintPath>
     </Reference>
     <Reference Include="FbonizziMonoGameAndroid, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\FbonizziMonoGame.Android.1.0.2-alpha\lib\monoandroid81\FbonizziMonoGameAndroid.dll</HintPath>
+      <HintPath>..\packages\FbonizziMonoGame.Android.1.0.0\lib\monoandroid81\FbonizziMonoGameAndroid.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Android" />

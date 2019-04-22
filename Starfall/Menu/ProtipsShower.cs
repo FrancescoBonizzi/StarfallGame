@@ -39,10 +39,10 @@ namespace Starfall.Menu
         public void NextProtip()
             => _currentProTipIndex = (_currentProTipIndex + 1) % _protips.Count;
 
-        public void Draw(SpriteBatch spriteBatch, Matrix? transformationMatrix = null)
+        public void Draw(SpriteBatch spriteBatch)
         {
             var protipToDraw = _protips[_currentProTipIndex];
-            spriteBatch.Begin(transformMatrix: transformationMatrix.Value);
+            spriteBatch.Begin();
             spriteBatch.Draw(protipToDraw.Image, _imageDrawingInfos);
             spriteBatch.DrawString(_font, protipToDraw.Text, protipToDraw.TextDrawingInfos);
             spriteBatch.End();

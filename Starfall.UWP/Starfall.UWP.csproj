@@ -11,7 +11,7 @@
     <AssemblyName>Starfall.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17134.0</TargetPlatformVersion>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -232,7 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FbonizziMonoGame">
-      <Version>1.0.8-alpha</Version>
+      <Version>1.0.1</Version>
     </PackageReference>
     <PackageReference Include="FbonizziMonoGame.UWP">
       <Version>1.0.5-alpha</Version>

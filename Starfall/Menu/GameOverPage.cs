@@ -21,15 +21,14 @@ namespace Starfall
         private const string _gameOverText = "Game Over";
         private readonly DrawingInfos _gameOverTextDrawingInfos;
         private readonly ScalingObject _gameOverScalingObject;
-        
-        private List<ScoreRecordText> _scoreInfos;
+
+        private readonly List<ScoreRecordText> _scoreInfos;
         private readonly int _nTexts;
 
-        private FadeObject _fadeObject;
+        private readonly FadeObject _fadeObject;
         private int _currentTextId;
 
         private readonly Sprite _background;
-        private readonly IScreenTransformationMatrixProvider _matrixScaleProvider;
 
         public GameOverPage(
             IScreenTransformationMatrixProvider matrixScaleProvider,
@@ -42,7 +41,6 @@ namespace Starfall
         {
             _font = assets.Font;
             _background = assets.Sprites["gameover"];
-            _matrixScaleProvider = matrixScaleProvider;
 
             _gameOverTextDrawingInfos = new DrawingInfos()
             {
@@ -50,7 +48,7 @@ namespace Starfall
                 Origin = _font.GetTextCenter(_gameOverText)
             };
             _gameOverScalingObject = new ScalingObject(1f, 1.2f, 1.0f);
-           
+
             var bestJumpTime = settingsRepository.GetOrSetTimeSpan(GameScores.BestJumpScoreKey, default(TimeSpan));
             var bestAliveTime = settingsRepository.GetOrSetTimeSpan(GameScores.BestAliveTimeScoreKey, default(TimeSpan));
             var bestNumberOfGlows = settingsRepository.GetOrSetInt(GameScores.MaxGlowsTakenScoreKey, default(int));
@@ -111,7 +109,7 @@ namespace Starfall
                     },
                     !bestJumpRecord ? null : "Record!"),
             };
-            
+
             _nTexts = _scoreInfos.Count;
             _currentTextId = 0;
             _fadeObject = new FadeObject(TimeSpan.FromMilliseconds(200), Color.White);
@@ -128,7 +126,9 @@ namespace Starfall
         public void HandleInput(GameOrchestrator orchestrator)
         {
             if (_currentTextId < _scoreInfos.Count - 1)
+            {
                 return;
+            }
 
             orchestrator.SetProtipGameState();
         }
@@ -145,17 +145,21 @@ namespace Starfall
             }
 
             foreach (var text in _scoreInfos)
+            {
                 text.Update(elapsed);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
+            spriteBatch.Begin();
 
             spriteBatch.Draw(_background);
             spriteBatch.DrawString(_font, _gameOverText, _gameOverTextDrawingInfos);
             foreach (var score in _scoreInfos)
+            {
                 score.Draw(spriteBatch, _font);
+            }
 
             spriteBatch.End();
         }

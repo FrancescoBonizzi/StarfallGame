@@ -32,7 +32,6 @@ namespace Starfall.UWP
                 settingsRepository: new UWPSettingsRepository(),
                 webPageOpener: new UWPWebPageOpener(Window.Current),
                 gameCulture: CultureInfo.CurrentCulture,
-                isPc: true,
                 isFullScreen: false,
                 rateMeUri: new Uri("https://www.microsoft.com/store/apps/9MW4T75WZR28"),
                 deviceWidth: _width, deviceHeight: _height),

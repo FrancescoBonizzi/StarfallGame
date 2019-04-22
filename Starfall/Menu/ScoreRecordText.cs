@@ -14,9 +14,9 @@ namespace Starfall.Menu
 
         public string RecordText { get; }
         public DrawingInfos RecordTextDrawingInfos { get; }
-        private Color _recordColor = new Color(255, 234, 0);
+        private readonly Color _recordColor = new Color(255, 234, 0);
         private readonly ScalingObject _recordScalingObject;
-        
+
         public ScoreRecordText(
             string scoreText,
             DrawingInfos textDrawingInfos,
@@ -54,7 +54,7 @@ namespace Starfall.Menu
                     RecordText,
                     RecordTextDrawingInfos);
             }
-          
+
             spriteBatch.DrawString(
                 font,
                 ScoreText,

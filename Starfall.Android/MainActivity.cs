@@ -23,14 +23,13 @@ namespace Starfall.Android
     {
         private StarfallBootstrap _game;
 
-        protected override IFbonizziGame StartGame(CultureInfo gameCulture)
+        protected override IFbonizziGame StartGame(CultureInfo cultureInfo)
         {
             _game = new StarfallBootstrap(
                 textFileAssetsLoader: new AndroidTextFileImporter(Assets),
                 settingsRepository: new AndroidSettingsRepository(this),
                 webPageOpener: new AndroidWebPageOpener(this),
-                gameCulture: gameCulture,
-                isPc: false,
+                gameCulture: cultureInfo,
                 isFullScreen: true,
                 rateMeUri: new Uri("market://details?id=com.francescobonizzi.starfall"));
 

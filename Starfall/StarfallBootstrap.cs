@@ -34,14 +34,14 @@ namespace Starfall.MonogameBootstrap
         private readonly ISettingsRepository _settingsRepository;
         private IEnumerable<IInputListener> _inputListeners;
 
-        private CultureInfo _gameCulture;
+        private readonly CultureInfo _gameCulture;
         private readonly IWebPageOpener _webPageOpener;
         private readonly InMemoryLocalizedStringsRepository _localizedStringsRepository;
 
         public event EventHandler ExitGameRequested;
 
         private GameOrchestrator _orchestrator;
-        private IScreenTransformationMatrixProvider _matrixScaleProvider;
+        private IScreenTransformationMatrixProvider _dynamicScaleMatrixProvider;
 
         private Sprite _mousePointer;
 
@@ -53,7 +53,6 @@ namespace Starfall.MonogameBootstrap
            ISettingsRepository settingsRepository,
            IWebPageOpener webPageOpener,
            CultureInfo gameCulture,
-           bool isPc,
            bool isFullScreen,
            Uri rateMeUri,
            int? deviceWidth = null,
@@ -82,11 +81,11 @@ namespace Starfall.MonogameBootstrap
 
         protected override void Initialize()
         {
-            _matrixScaleProvider = new DynamicScalingMatrixProvider(
+            _dynamicScaleMatrixProvider = new DynamicScalingMatrixProvider(
                 new GameWindowScreenSizeChangedNotifier(Window),
                 GraphicsDeviceManager.GraphicsDevice,
                 800, 480,
-                !GraphicsDeviceManager.IsFullScreen);
+                true);
             IsMouseVisible = false;
             base.Initialize();
         }
@@ -104,13 +103,13 @@ namespace Starfall.MonogameBootstrap
 
             var gameFactory = new Func<StarfallGame>(
                 () => new StarfallGame(
-                    _matrixScaleProvider,
+                    _dynamicScaleMatrixProvider,
                     loader,
                     _settingsRepository,
                     _orchestrator));
 
             var dialogDefinition = new Rectangle(
-                _matrixScaleProvider.VirtualWidth / 2 - 350, 24, 700, _matrixScaleProvider.VirtualHeight - 60);
+                _dynamicScaleMatrixProvider.VirtualWidth / 2 - 350, 24, 700, _dynamicScaleMatrixProvider.VirtualHeight - 60);
 
             var rateMeDialog = new RateMeDialog(
                 launchesUntilPrompt: 2,
@@ -119,7 +118,7 @@ namespace Starfall.MonogameBootstrap
                 dialogDefinition: dialogDefinition,
                 font: loader.Font,
                 localizedStringsRepository: _localizedStringsRepository,
-                rateMeDialogStrings: _gameCulture.TwoLetterISOLanguageName == "it" ? (RateMeDialogStrings)new DefaultItalianRateMeDialogStrings(_gameName) : (RateMeDialogStrings)new DefaultEnglishRateMeDialogStrings(_gameName),
+                rateMeDialogStrings: _gameCulture.TwoLetterISOLanguageName == "it" ? new DefaultItalianRateMeDialogStrings(_gameName) : (RateMeDialogStrings)new DefaultEnglishRateMeDialogStrings(_gameName),
                 webPageOpener: _webPageOpener,
                 settingsRepository: _settingsRepository,
                 buttonADefinition: new Rectangle(
@@ -139,19 +138,18 @@ namespace Starfall.MonogameBootstrap
                 titlePositionOffset: new Vector2(dialogDefinition.Width / 2, 80f),
                 buttonTextPadding: 40f,
                 titlePadding: 160f);
-            
+
             var menuFactory = new Func<MainMenuPage>(
                 () => new MainMenuPage(
                     loader,
                     rateMeDialog,
                     _settingsRepository,
-                    _matrixScaleProvider,
+                    _dynamicScaleMatrixProvider,
                     _localizedStringsRepository));
 
             var textsShowFactory = new Func<IncipitPage>(
                 () => new IncipitPage(
                     loader,
-                    _matrixScaleProvider,
                     new List<string>()
                      {
                           _localizedStringsRepository.Get(GameStringsLoader.SlideshowTextString1),
@@ -168,11 +166,11 @@ namespace Starfall.MonogameBootstrap
                 () => new ScorePage(
                     loader,
                     _settingsRepository,
-                    _matrixScaleProvider,
+                    _dynamicScaleMatrixProvider,
                     _localizedStringsRepository));
 
-            var protipPosition = new Vector2(50f, _matrixScaleProvider.VirtualHeight - 50);
-            var protipTextScale = 0.4f;
+            var protipPosition = new Vector2(50f, _dynamicScaleMatrixProvider.VirtualHeight - 50);
+            const float protipTextScale = 0.4f;
             _orchestrator = new GameOrchestrator(
                 gameFactory,
                 menuFactory,
@@ -228,14 +226,14 @@ namespace Starfall.MonogameBootstrap
                 _spriteBatch.GraphicsDevice,
                 loader,
                 _settingsRepository,
-                _matrixScaleProvider,
+                _dynamicScaleMatrixProvider,
                 _webPageOpener,
                 _localizedStringsRepository);
-            
-            var mouseListener = new MouseListener(_matrixScaleProvider);
+
+            var mouseListener = new MouseListener(_dynamicScaleMatrixProvider);
             mouseListener.MouseDown += MouseListener_MouseClicked;
 
-            var touchListener = new TouchListener(_matrixScaleProvider);
+            var touchListener = new TouchListener(_dynamicScaleMatrixProvider);
             touchListener.TouchStarted += TouchListener_TouchEnded;
 
             var keyboardListener = new KeyboardListener();
@@ -261,9 +259,13 @@ namespace Starfall.MonogameBootstrap
                 if (_orchestrator.ShouldEndApplication)
                 {
                     if (ExitGameRequested != null)
+                    {
                         ExitGameRequested(this, EventArgs.Empty); // Se ho un handler specifico, uso quello
+                    }
                     else
+                    {
                         Exit(); // Devono ancora fixare il problema dell'uscita da Android
+                    }
                 }
             }
         }
@@ -280,9 +282,13 @@ namespace Starfall.MonogameBootstrap
                 if (_orchestrator.ShouldEndApplication)
                 {
                     if (ExitGameRequested != null)
+                    {
                         ExitGameRequested(this, EventArgs.Empty); // Se ho un handler specifico, uso quello
+                    }
                     else
+                    {
                         Exit(); // Devono ancora fixare il problema dell'uscita da Android
+                    }
                 }
             }
             else if (e.Key == Keys.Back) // L'indietro di Android viene triggerato qui!
@@ -291,9 +297,13 @@ namespace Starfall.MonogameBootstrap
                 if (_orchestrator.ShouldEndApplication)
                 {
                     if (ExitGameRequested != null)
+                    {
                         ExitGameRequested(this, EventArgs.Empty); // Se ho un handler specifico, uso quello
+                    }
                     else
+                    {
                         Exit(); // Devono ancora fixare il problema dell'uscita da Android
+                    }
                 }
             }
             else if (e.Key == Keys.Space)
@@ -318,10 +328,10 @@ namespace Starfall.MonogameBootstrap
                 Content,
                 "Splashscreen/splashscreen");
             _splashScreenLoader.Load();
-            _splashScreenLoader.Completed += _splashScreenLoader_Completed;
+            _splashScreenLoader.Completed += SplashScreenLoader_Completed;
         }
 
-        private void _splashScreenLoader_Completed(object sender, EventArgs e)
+        private void SplashScreenLoader_Completed(object sender, EventArgs e)
         {
             _splashScreenLoader = null;
             _orchestrator.Start();
@@ -336,7 +346,9 @@ namespace Starfall.MonogameBootstrap
         protected override void Update(GameTime gameTime)
         {
             if (!IsActive)
+            {
                 return;
+            }
 
             TimeSpan elapsed = gameTime.ElapsedGameTime;
 
@@ -347,7 +359,9 @@ namespace Starfall.MonogameBootstrap
             }
 
             foreach (var listener in _inputListeners)
+            {
                 listener.Update(gameTime);
+            }
 
             _orchestrator.Update(elapsed);
             base.Update(gameTime);
@@ -356,12 +370,14 @@ namespace Starfall.MonogameBootstrap
         protected override void Draw(GameTime gameTime)
         {
             if (!IsActive)
+            {
                 return;
+            }
 
             if (_splashScreenLoader != null)
             {
                 GraphicsDevice.Clear(Color.Black);
-                _spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
+                _spriteBatch.Begin(transformMatrix: _dynamicScaleMatrixProvider.ScaleMatrix);
                 _splashScreenLoader.Draw(_spriteBatch);
                 _spriteBatch.End();
                 return;

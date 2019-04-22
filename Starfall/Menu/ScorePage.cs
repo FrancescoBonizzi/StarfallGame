@@ -16,17 +16,16 @@ namespace Starfall.Menu
     public class ScorePage
     {
         private readonly Sprite _background;
-        private readonly IScreenTransformationMatrixProvider _matrixScaleProvider;
         private readonly SpriteFont _font;
 
         private readonly ScalingObject _titleScalingObject;
         private readonly DrawingInfos _titleDrawingInfos;
         private readonly string _titleText;
 
-        private List<ScoreRecordText> _scoreInfos;
+        private readonly List<ScoreRecordText> _scoreInfos;
         private readonly int _nTexts;
 
-        private FadeObject _fadeObject;
+        private readonly FadeObject _fadeObject;
         private int _currentTextId;
 
         public ScorePage(
@@ -37,7 +36,6 @@ namespace Starfall.Menu
         {
             _font = assets.Font;
             _background = assets.Sprites["gameover"];
-            _matrixScaleProvider = matrixScaleProvider;
 
             _titleText = localizedStringsRepository.Get(GameStringsLoader.ScorePageTitleString);
             _titleScalingObject = new ScalingObject(1f, 1.2f, 1.0f);
@@ -108,17 +106,21 @@ namespace Starfall.Menu
             }
 
             foreach (var text in _scoreInfos)
+            {
                 text.Update(elapsed);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
+            spriteBatch.Begin();
 
             spriteBatch.Draw(_background);
             spriteBatch.DrawString(_font, _titleText, _titleDrawingInfos);
             foreach (var score in _scoreInfos)
+            {
                 score.Draw(spriteBatch, _font);
+            }
 
             spriteBatch.End();
         }

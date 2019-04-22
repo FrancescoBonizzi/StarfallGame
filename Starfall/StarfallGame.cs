@@ -18,7 +18,6 @@ namespace Starfall
 {
     public class StarfallGame
     {
-        private readonly IScreenTransformationMatrixProvider _matrixScaleProvider;
         private readonly Camera2D _camera;
 
         private readonly HorizontalScrollingBackground _layer0;
@@ -38,7 +37,7 @@ namespace Starfall
         private readonly JumpGemBar _jumpGemBar;
         private readonly ISettingsRepository _settingsRepository;
         private readonly GameOrchestrator _gameOrchestrator;
-        private int _nAumentoDifficolta = 0;
+        private int _nAumentoDifficolta;
         private readonly TimeSpan _aumentoDifficoltaInterval = TimeSpan.FromSeconds(20);
         private TimeSpan _aumentoDifficoltaElapsed = TimeSpan.Zero;
 
@@ -46,7 +45,7 @@ namespace Starfall
         private readonly SoundEffectInstance _backgroundMusic;
 
         private Vector2 _cameraOffsetFromPlayer = new Vector2(134f, 0f);
-  
+
         public StarfallGame(
             IScreenTransformationMatrixProvider matrixScaleProvider,
             AssetsLoader assets,
@@ -60,9 +59,8 @@ namespace Starfall
             _backgroundMusic.IsLooped = true;
             _backgroundMusic.Play();
 
-            _matrixScaleProvider = matrixScaleProvider;
-            _camera = new Camera2D(matrixScaleProvider);
-         
+            _camera = new Camera2D(matrixScaleProvider.VirtualWidth, matrixScaleProvider.VirtualHeight);
+
             _jumpGemBar = new JumpGemBar(
                 assets.Animations[AssetsLoader.AnimationsNames.GoodGlow].FirstFrameSprite,
                 matrixScaleProvider,
@@ -93,7 +91,7 @@ namespace Starfall
             _layer7 = new FillViewportBackground(
                 assets.Sprites["7"], matrixScaleProvider);
 
-            float multiplier = 1.5f;
+            const float multiplier = 1.5f;
 
             _layer6 = new HorizontalScrollingBackground(
                 matrixScaleProvider,
@@ -155,7 +153,7 @@ namespace Starfall
 
             var gameStartTotalGameTime = _settingsRepository.GetOrSetTimeSpan("TotalGameTime", TimeSpan.FromSeconds(0));
             _settingsRepository.SetTimeSpan("TotalGameTime", gameStartTotalGameTime + CurrentPlayingTime.Elapsed);
-            
+
             _gameOrchestrator.SetGameOverState(
                 _player.GetBestJumpThisPlay(),
                 CurrentPlayingTime.Elapsed,
@@ -187,7 +185,7 @@ namespace Starfall
                 _camera.Position.Y);
 
             _player.Update(elapsed);
-            
+
             if (_nAumentoDifficolta < 4)
             {
                 _aumentoDifficoltaElapsed += elapsed;
@@ -219,7 +217,7 @@ namespace Starfall
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
+            spriteBatch.Begin();
             _layer7.Draw(spriteBatch);
             spriteBatch.End();
 
@@ -239,7 +237,7 @@ namespace Starfall
 
             spriteBatch.End();
 
-            spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
+            spriteBatch.Begin();
             _gameHud.Draw(spriteBatch);
             spriteBatch.End();
         }

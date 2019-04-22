@@ -16,9 +16,8 @@ namespace Starfall.About
     public class IncipitPage
     {
         private readonly Sprite _background;
-        private readonly IScreenTransformationMatrixProvider _matrixScaleProvider;
         private readonly SoundEffectInstance _backgroundMusic;
-        private List<KeyValuePair<string, DrawingInfos>> _texts;
+        private readonly List<KeyValuePair<string, DrawingInfos>> _texts;
         private readonly FadeObject _fadeObject;
         private readonly SpriteFont _font;
         private readonly int _nTexts;
@@ -28,7 +27,6 @@ namespace Starfall.About
 
         public IncipitPage(
             AssetsLoader assets,
-            IScreenTransformationMatrixProvider matrixScaleProvider,
             IEnumerable<string> texts)
         {
             _background = assets.Sprites["incipitbg"];
@@ -36,7 +34,6 @@ namespace Starfall.About
             _nTexts = texts.Count();
             _fadeObject = new FadeObject(TimeSpan.FromSeconds(2f), Color.White);
             _fadeObject.FadeInCompleted += _fadeObject_FadeInCompleted;
-            _matrixScaleProvider = matrixScaleProvider;
 
             _backgroundMusic = assets.Sounds[AssetsLoader.SoundsNames.slideshow].CreateInstance();
             _backgroundMusic.Play();
@@ -73,7 +70,9 @@ namespace Starfall.About
             ++_currentTextId;
 
             if (_currentTextId == _nTexts - 1)
+            {
                 Completed?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void Update(TimeSpan elapsed)
@@ -87,13 +86,16 @@ namespace Starfall.About
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
+            spriteBatch.Begin();
             spriteBatch.Draw(_background);
             foreach (var text in _texts)
+            {
                 spriteBatch.DrawString(
                     _font,
                     text.Key,
                     text.Value);
+            }
+
             spriteBatch.End();
         }
 

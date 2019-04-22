@@ -49,7 +49,7 @@ namespace Starfall
 
         private GameOverPage _gameOver;
 
-        private FadeObject _stateTransition;
+        private readonly FadeObject _stateTransition;
         private Action _afterTransitionAction;
 
         private RenderTarget2D _renderTarget;
@@ -113,8 +113,8 @@ namespace Starfall
         {
             _renderTarget = new RenderTarget2D(
                 _graphicsDevice,
-                _matrixScaleProvider.RealScreenWidth,
-                _matrixScaleProvider.RealScreenHeight);
+                _matrixScaleProvider.VirtualWidth,
+                _matrixScaleProvider.VirtualHeight);
         }
 
         private void _stateTransition_FadeOutCompleted(object sender, EventArgs e)
@@ -426,7 +426,7 @@ namespace Starfall
                     break;
 
                 case GameStates.Protip:
-                    _proTipsShower.Draw(spriteBatch, _matrixScaleProvider.ScaleMatrix);
+                    _proTipsShower.Draw(spriteBatch);
                     break;
 
                 case GameStates.Score:
@@ -437,7 +437,7 @@ namespace Starfall
             // ...per poter fare il fade dei vari componenti in modo indipendente
             graphics.SetRenderTarget(null);
             graphics.Clear(Color.Black);
-            spriteBatch.Begin();
+            spriteBatch.Begin(transformMatrix: _matrixScaleProvider.ScaleMatrix);
             spriteBatch.Draw(_renderTarget, Vector2.Zero, _stateTransition.OverlayColor);
             spriteBatch.End();
         }
