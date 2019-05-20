@@ -41,22 +41,6 @@ namespace Starfall.Android
 			}
 		}
 		
-		public partial class Drawable
-		{
-			
-			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
-			
-			static Drawable()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private Drawable()
-			{
-			}
-		}
-		
 		public partial class Layout
 		{
 			
@@ -69,6 +53,25 @@ namespace Starfall.Android
 			}
 			
 			private Layout()
+			{
+			}
+		}
+		
+		public partial class Mipmap
+		{
+			
+			// aapt resource value: 0x7f020000
+			public const int ic_launcher = 2130837504;
+			
+			// aapt resource value: 0x7f020001
+			public const int ic_launcher_round = 2130837505;
+			
+			static Mipmap()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Mipmap()
 			{
 			}
 		}

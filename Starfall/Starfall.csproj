@@ -211,8 +211,7 @@
     <Content Include="Assets\_TextureProject\Export\rewardBronzo.png" />
     <Content Include="Assets\_TextureProject\Export\rewardOro.png" />
     <Content Include="Assets\_TextureProject\Export\scorebg.jpg" />
-    <Content Include="Assets\_TextureProject\Icon512x512.png" />
-    <Content Include="Assets\_TextureProject\Icon72x72.png" />
+    <Content Include="Assets\_TextureProject\icon.png" />
     <Content Include="Assets\_TextureProject\Protips\TIPS_glow.jpg" />
     <Content Include="Assets\_TextureProject\Protips\TIPS_life.jpg" />
     <Content Include="Assets\_TextureProject\Protips\TIPS_timejump.jpg" />
