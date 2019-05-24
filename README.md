@@ -1,4 +1,4 @@
-# ![Logo](Starfall/Assets/_TextureProject/Icon72x72.png) Starfall
+# <img src="Starfall/Assets/_TextureProject/icon.png" alt="drawing" width="72"/> Starfall
 
 [<img 
 	height="60px" 
