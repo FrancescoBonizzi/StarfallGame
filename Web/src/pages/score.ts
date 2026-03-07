@@ -1,5 +1,6 @@
 import router from './router.ts';
 import ScoreRepository from "../services/ScoreRepository.ts";
+import { attachSpriteBackground } from "../services/SpriteBackground.ts";
 
 export function renderScorePage(container: HTMLElement) {
     container.innerHTML = `
@@ -32,4 +33,7 @@ export function renderScorePage(container: HTMLElement) {
   `;
 
     router.updatePageLinks();
+
+    const section = container.querySelector<HTMLElement>('.score')!;
+    attachSpriteBackground(section, 1, 1);
 }

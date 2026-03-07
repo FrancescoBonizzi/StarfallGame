@@ -1,6 +1,7 @@
 import router from './router.ts';
 import ScoreRepository from "../services/ScoreRepository.ts";
-import {SoundManagerInstance} from "../services/SoundInstance.ts";
+import { SoundManagerInstance } from "../services/SoundInstance.ts";
+import { attachSpriteBackground } from "../services/SpriteBackground.ts";
 
 export function renderGameOverPage(container: HTMLElement) {
 
@@ -34,5 +35,9 @@ export function renderGameOverPage(container: HTMLElement) {
   `;
 
     router.updatePageLinks();
+
+    const section = container.querySelector<HTMLElement>('.gameover')!;
+    attachSpriteBackground(section, 1, 1);
+
     SoundManagerInstance.playMenuSoundTrack();
 }
