@@ -5,7 +5,7 @@
 Stiamo migrando il videogioco **Starfall** da MonoGame (C#) a PixiJS (TypeScript).
 
 - **Sorgente C#**: `CSharp/Starfall/` (e sottoprogetti, ignorare Android/UWP/WindowsDesktop)
-- **Destinazione Web**: `Web/` (da creare)
+- **Destinazione Web**: `Web/` (scaffold da fare — public/assets già popolato)
 - **Riferimento migrato**: `progetto-riferimento/InfartGame/Web/` (progetto già funzionante da copiare/adattare)
 - **Docs di migrazione**: `migration-specs/ARCHITECTURE_MAP.md` e `migration-specs/PATTERN_COOKBOOK.md`
 
@@ -163,38 +163,38 @@ update(time: Ticker) {
 
 ---
 
-## Regola 7: Spritesheet
+## Regola 7: Spritesheet (già pronte)
 
-- Le spritesheets del C# sono `.txt` + `.png` (formato custom `nome|x|y|w|h`)
-- Vanno convertite in formato PixiJS: `.json` (TexturePacker/PixiJS format) + `.png`
-- Le **animazioni** devono essere nella sezione `"animations"` del JSON:
-  ```json
-  "animations": {
-    "playerRun": ["run_000","run_001",...,"run_019"],
-    "playerJump": ["jump_000",...,"jump_019"],
-    "playerDeath": ["death_000",...,"death_019"],
-    "goodGlow": ["good_glow_000",...,"good_glow_019"],
-    "badGlow": ["bad_glow_000",...,"bad_glow_019"]
-  }
-  ```
-- Le spritesheets da creare per Starfall:
-  - `others.json` + `others.png` (player animations, gems, UI sprites, cometParticle)
-  - `backgrounds.json` + `backgrounds.png` (layer 0-7)
-  - `protips.json` + `protips.png` (tip images)
+Le spritesheets sono **già convertite e presenti** in `Web/public/assets/images/spriteSheets/`:
+
+| File JSON | File PNG | Contenuto |
+|-----------|----------|-----------|
+| `others.json` | `others.png` | Animazioni player (run/jump/death), goodGlow, badGlow, cometParticle, glow sprites, UI backgrounds |
+| `backgrounds.json` | `backgrounds.png` | Layer parallax bg0, bg1a, bg1b, bg1c, bg2..bg7 |
+| `protips.json` | `protips.png` | TIP_1..4, TIPS_glow, TIPS_life, TIPS_timejump |
+
+Animazioni disponibili nel JSON (sezione `animations`):
+- `others.json`: `playerRun`, `playerJump`, `playerDeath`, `goodGlow`, `badGlow`
+- `backgrounds.json`: nessuna (solo frame statici)
+- `protips.json`: nessuna (solo frame statici)
+
+Sprite statici notevoli in `others.json`: `glow-omino`, `glow-terra-omino`, `glow-bianco`, `glow-rosso`, `cometParticle`, `menuBackground`, `gameover`, `scorebg`, `incipitbg`.
 
 ---
 
-## Regola 8: Suoni
+## Regola 8: Suoni (già copiati)
 
-- Tutti i suoni stanno in `public/assets/sounds/`
-- Copia i file MP3 da `CSharp/Starfall/Assets/ContentBuilder/Music/`
-- `SoundManager` è singleton (vedi `SoundInstance.ts` dal riferimento)
-- Suoni Starfall:
-  - `Running.mp3` → `sounds/music/running.mp3` (game soundtrack)
-  - `menu.mp3` → `sounds/music/menu.mp3`
-  - `Slideshow.mp3` → `sounds/music/slideshow.mp3`
-  - `TakeGem.mp3` → `sounds/effects/takegem.mp3`
-  - `Die.mp3` → `sounds/effects/die.mp3`
+I file MP3 sono **già presenti** in `Web/public/assets/sounds/`:
+
+| Percorso web | SoundManager key |
+|---|---|
+| `sounds/music/running.mp3` | `musicGame` |
+| `sounds/music/menu.mp3` | `musicMenu` |
+| `sounds/music/slideshow.mp3` | `musicIncipit` |
+| `sounds/effects/takegem.mp3` | `takeGem` |
+| `sounds/effects/die.mp3` | `die` |
+
+`SoundManager` è singleton (vedi `SoundInstance.ts` dal riferimento da copiare).
 
 ---
 
@@ -231,7 +231,7 @@ Quindi: usare `!` solo quando certi, oppure gestire `undefined`.
 
 1. **Scaffold**: `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`
 2. **Copia primitivi**: Camera, CollisionSolver, Numbers, Controller, ParticleSystem, ecc.
-3. **Assets**: copiare file MP3/PNG, creare JSON spritesheets, AssetsLoader + StarfallAssets
+3. **Assets**: (PNG/MP3/JSON già pronti in `Web/public/`) → scrivere AssetsLoader + StarfallAssets
 4. **Infrastruttura**: main.ts, router.ts, gamebootstrap.ts, SoundManager, ScoreRepository
 5. **Pages HTML**: menu, score, gameover, incipit, protips
 6. **Game core**: Game.ts con parallax backgrounds + camera

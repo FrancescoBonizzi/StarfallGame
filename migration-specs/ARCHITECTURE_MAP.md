@@ -178,19 +178,25 @@ La transizione FadeObject del C# → non necessaria nel Web (le pagine HTML si s
 - Suoni: `.mp3` caricati con Howler
 - AnimatedSprites: `new AnimatedSprite(spriteSheet.animations.nomeAnimazione)`
 
-### Mapping spritesheet Starfall → PixiJS JSON
+### Spritesheet Starfall (già convertite e pronte)
 
-Le spritesheets attuali sono:
-- `others.png` (animazioni player, gems, UI) → da convertire in `player.json` + `player.png`
-- `backgrounds.png` (layer 0-7) → da convertire in `backgrounds.json` + `backgrounds.png`
-- `protips.png` (TIP_1..4, TIPS_*) → da convertire in `protips.json` + `protips.png`
+File in `Web/public/assets/images/spriteSheets/`:
 
-**Animazioni** nel JSON PixiJS usano la sezione `animations`:
-```json
-{
-  "frames": { "run_000": {...}, "run_001": {...}, ... },
-  "animations": { "playerRun": ["run_000","run_001",...] }
-}
+| JSON | PNG | Contenuto | Animazioni |
+|------|-----|-----------|------------|
+| `others.json` | `others.png` | player, gems, UI, glow sprites | `playerRun`, `playerJump`, `playerDeath`, `goodGlow`, `badGlow` |
+| `backgrounds.json` | `backgrounds.png` | parallax layers | nessuna |
+| `protips.json` | `protips.png` | immagini tip | nessuna |
+
+Nomi frame backgrounds: `bg0`, `bg1a`, `bg1b`, `bg1c`, `bg2`, `bg3`, `bg4`, `bg5`, `bg6`, `bg7`.
+
+Caricamento in AssetsLoader:
+```typescript
+const othersSpriteSheet = await Assets.load('.../others.json') as Spritesheet;
+const bgSpriteSheet = await Assets.load('.../backgrounds.json') as Spritesheet;
+const protipsSpriteSheet = await Assets.load('.../protips.json') as Spritesheet;
+// Animazioni:
+new AnimatedSprite(othersSpriteSheet.animations.playerRun!)
 ```
 
 ---
@@ -266,9 +272,10 @@ StatesManager
 - Velocità relativa: `layer6=-0.6*mult`, `layer5=-0.5*mult`, ecc.
 
 ### PixiJS
-- Stesso pattern ma con `TilingSprite` di PixiJS o gestione manuale di tile
-- Texture da backgroundsSpriteSheet
-- Aggiunto fuori dalla camera world (direttamente in stage o in un container separato)
+- Texture da `backgroundsSpriteSheet.textures['bg0']`, `['bg1a']`, ecc.
+- Layer 7 (fill viewport, `bg7`): `app.stage.addChild` senza camera, fisso
+- Layer 0-6: gestione manuale di tile orizzontale (come C#), aggiunto allo stage in un container fisso (non nella camera world, per evitare doppio scroll)
+- Ogni layer ha la sua velocità di scroll relativa al player velocity X
 
 ---
 
