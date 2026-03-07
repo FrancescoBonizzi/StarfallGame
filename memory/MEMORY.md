@@ -33,6 +33,7 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 
 - Dopo Fase 0: verifica package.json e tsconfig
 - Dopo Fase 2: verifica struttura JSON spritesheets
+- Dopo Fase 3: verifica che il routing e la navigazione funzionino
 - Dopo Fase 4: verifica game loop gira a vuoto nel browser
 
 ## File da copiare IDENTICI dal riferimento
