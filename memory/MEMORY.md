@@ -20,21 +20,35 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 
 ## Stato migrazione
 
-- [ ] Fase 0: Scaffold base (package.json, tsconfig, vite.config, index.html)
-- [ ] Fase 1: Copia primitivi dal riferimento
+- [x] Fase 0: Scaffold base (package.json, tsconfig, vite.config, index.html) — COMPLETO
+- [x] Fase 1: Primitivi + infrastruttura + menu funzionante — COMPLETO
 - [x] Fase 2: Assets — spritesheet JSON generati + PNG e MP3 copiati in Web/public/
-- [ ] Fase 3: Infrastruttura (router, pages, SoundManager)
-- [ ] Fase 4: Game core (backgrounds, camera, game loop)
-- [ ] Fase 5: Player + States + JumpGemBar + CometParticles
-- [ ] Fase 6: Gems (Good/Bad) + Generators + GemsManager
-- [ ] Fase 7: HUD + collisioni + score + difficoltà
+- [ ] Fase 3 (prossima): Game core (backgrounds, camera, game loop)
+- [ ] Fase 4: Player + States + JumpGemBar + CometParticles
+- [ ] Fase 5: Gems (Good/Bad) + Generators + GemsManager
+- [ ] Fase 6: HUD + collisioni + score + difficoltà
+
+### Fase 0+1 — File creati in Web/src/
+- Scaffold: `vite-env.d.ts`, `main.ts`, `ui/styles.css`
+- Assets: `assets/StarfallAssets.ts`, `assets/AssetsLoader.ts`
+- Services: `services/CollisionSolver.ts`, `Numbers.ts`, `StringHelper.ts`, `AudioUnlocker.ts`, `SoundInstance.ts`, `SoundManager.ts`, `ScoreRepository.ts`
+- Interaction: `interaction/Controller.ts`
+- Particles: `particleEmitters/ParticleSystem.ts`, `Particle.ts`
+- Primitives: `primitives/Interval.ts`
+- uiKit: `uiKit/LoadingThing.ts`
+- World: `world/Camera.ts`, `IHasCollisionRectangle.ts`
+- Pages: `pages/router.ts`, `gamebootstrap.ts`, `menu.ts`, `gameover.ts`, `score.ts`, `incipit.ts`, `protips.ts`
+- `Game.ts` (stub vuoto)
+- Font: `public/assets/fonts/PatrickHandSC-Regular.ttf`
+
+### Build
+`tsc --noEmit` → 0 errori. `vite build` → successo.
 
 ## Checkpoint obbligatori (aspettare approvazione)
 
-- Dopo Fase 0: verifica package.json e tsconfig
-- Dopo Fase 2: verifica struttura JSON spritesheets
-- Dopo Fase 3: verifica che il routing e la navigazione funzionino
-- Dopo Fase 4: verifica game loop gira a vuoto nel browser
+- [x] Dopo Fase 0+1: tsc + vite build puliti, menu navigabile nel browser
+- [ ] Dopo Fase 3: verifica game loop gira a vuoto nel browser
+- [ ] Dopo Fase 4: player visibile che corre
 
 ## File da copiare IDENTICI dal riferimento
 

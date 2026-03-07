@@ -1,0 +1,387 @@
+:root {
+    --ink: #e5e7eb;
+    --accent: #22d3ee;
+    --background: #0b1220;
+}
+
+/* Reset base */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* blocco selezione (incluso iOS) */
+html, body, * {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none; /* iOS: niente menu selezione */
+}
+
+/* evita drag su immagini/SVG/link/button */
+img, svg, a, button {
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
+html, body {
+    height: 100%;
+    background: var(--background);
+    overflow: hidden;
+    overscroll-behavior: none;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button, input, textarea, select {
+    font: inherit;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    color: var(--ink);
+    font: 500 16px/1.5 "Patrick Hand SC", "Comic Sans MS", cursive, sans-serif;
+}
+
+main, .menu, .score, .gameover, .incipit, .protips {
+    min-height: 100dvh;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    text-align: center;
+    font-size: 128px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.menu-content {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    align-items: center;
+}
+
+.menu-actions {
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-self: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.button {
+    appearance: none;
+    border: 1px solid #334155;
+    background: var(--background);
+    color: var(--ink);
+    width: 100%;
+    max-width: 250px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 32px;
+    display: inline-block;
+    text-align: center;
+}
+
+.button.primary {
+    background: var(--accent);
+    color: var(--background);
+}
+
+canvas {
+    display: block;
+    margin: 0 auto
+}
+
+.gameover {
+    display: flex;
+    justify-content: center;
+}
+
+.score {
+    display: flex;
+    justify-content: center;
+}
+
+.incipit {
+    display: flex;
+    justify-content: center;
+}
+
+.protips {
+    display: flex;
+    justify-content: center;
+}
+
+.menu,
+.score,
+.gameover,
+.incipit,
+.protips {
+    overflow: hidden;
+}
+
+.score-content {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    width: 100%;
+    padding: 0 16px;
+}
+
+.score-second-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.score-table {
+    display: grid;
+    gap: 8px;
+    max-width: 600px;
+    width: 100%;
+    margin-bottom: 16px;
+    border-radius: 16px;
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background: var(--background);
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.score-label {
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.score-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+@supports not (padding: max(0px)) { /* no-op, solo per vecchi parser */ }
+
+#game-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Se dvh è affidabile sul device, usalo */
+@supports (height: 100dvh) {
+    #game-wrapper { height: min(100dvh, 100svh); }
+}
+
+canvas { display: block; }
+
+#game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#orientation-message {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font: 500 16px 'Patrick Hand SC', 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+    display: none;
+    pointer-events: none;
+}
+
+/* --- Animazioni --- */
+@keyframes slowPulseTitle {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes slowPulseBtn {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+}
+
+/* Titolo: pulse lento continuo */
+.title {
+    animation: slowPulseTitle 3s ease-in-out infinite;
+    transform-origin: center;
+    will-change: transform;
+}
+
+/* Pulsanti: pulse lento, con sfasamento */
+.button {
+    animation: slowPulseBtn 3s ease-in-out infinite;
+    transform-origin: center;
+    will-change: transform;
+}
+
+/* Stagger (sfasamento) sui singoli pulsanti */
+.menu-actions .button:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.menu-actions .button:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.menu-actions .button:nth-child(3) {
+    animation-delay: .4s;
+}
+
+/* Hover/focus: effetto secco */
+.menu-actions .button:hover,
+.menu-actions .button:focus-visible {
+    animation: none;
+    transform: scale(1.12) rotate(-1.5deg);
+}
+
+.menu-actions .button:nth-child(even):hover,
+.menu-actions .button:nth-child(even):focus-visible {
+    transform: scale(1.12) rotate(1.5deg);
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 60px;
+        margin-top: 32px;
+    }
+
+    .score-label, .score-value {
+        font-size: 22px;
+    }
+
+    .button {
+        font-size: 24px;
+        padding: 10px 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 48px;
+        margin-top: 24px;
+    }
+
+    .score-label, .score-value {
+        font-size: 18px;
+    }
+
+    .button {
+        font-size: 20px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-height: 450px) and (orientation: landscape) {
+    .menu-content, .score-content {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        padding: 0 16px;
+        height: 100dvh;
+    }
+
+    .title {
+        font-size: 42px;
+        margin: 0;
+    }
+
+    .menu-actions, .score-second-row {
+        margin-left: 20px;
+    }
+
+    .button {
+        font-size: 18px;
+        padding: 6px 10px;
+        max-width: 200px;
+    }
+
+    .score-label, .score-value {
+        font-size: 16px;
+    }
+
+    .score-row {
+        padding: 8px 12px;
+    }
+
+    .score-table {
+        margin-bottom: 8px;
+        gap: 4px;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .button:hover {
+        transform: none !important;
+    }
+}

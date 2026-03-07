@@ -1,0 +1,111 @@
+import {Application} from "pixi.js";
+import {loadAssets} from "../assets/AssetsLoader.ts";
+import LoadingThing from "../uiKit/LoadingThing.ts";
+import Game from "../Game.ts";
+import {SoundManagerInstance} from "../services/SoundInstance.ts";
+
+const GAME_W = 800;
+const GAME_H = 480;
+
+let app: Application | null = null;
+let gameContainer: HTMLDivElement | null = null;
+let orientationMsg: HTMLParagraphElement | null = null;
+
+export async function initGame(container: HTMLElement) {
+
+    if (app) {
+        destroyGame();
+    }
+
+    container.innerHTML = `
+    <div id="game-wrapper">
+        <div id="game-container"></div>
+        <p id="orientation-message">
+          Il gioco è più bello se giocato da PC!
+        </p>
+      </div>
+  `;
+
+    gameContainer = container.querySelector<HTMLDivElement>("#game-container");
+    if (!gameContainer) {
+        console.error("Game container non trovato");
+        return;
+    }
+
+    orientationMsg = container.querySelector<HTMLParagraphElement>("#orientation-message");
+
+    app = new Application();
+
+    await app.init({
+        background: '#0b1220',
+        width: GAME_W,
+        height: GAME_H,
+        premultipliedAlpha: false,
+        antialias: true,
+        autoDensity: true,
+        resolution: Math.min(window.devicePixelRatio || 1, 2),
+    });
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    gameContainer.appendChild(app.canvas);
+
+    try {
+        const loadingThing = new LoadingThing(app);
+        loadingThing.show();
+        const starfallAssets = await loadAssets();
+        loadingThing.hide();
+
+        const game = new Game(
+            starfallAssets,
+            app,
+            SoundManagerInstance);
+        SoundManagerInstance.playGameSoundTrack();
+
+        app.ticker.add((time) => {
+            game.update(time);
+        });
+    }
+    catch (e) {
+        alert("Ooops! Errore!");
+        console.error(e);
+    }
+}
+
+function resize() {
+    if (!app || !gameContainer) return;
+
+    const containerW = gameContainer.clientWidth;
+    const containerH = gameContainer.clientHeight;
+
+    if (containerW === 0 || containerH === 0) return;
+
+    if (orientationMsg) {
+        orientationMsg.style.display = containerH > containerW ? "block" : "none";
+    }
+
+    const scale = Math.min(containerW / GAME_W, containerH / GAME_H);
+
+    const canvasW = Math.floor(GAME_W * scale);
+    const canvasH = Math.floor(GAME_H * scale);
+
+    app.renderer.resize(GAME_W, GAME_H);
+
+    app.canvas.style.width = canvasW + 'px';
+    app.canvas.style.height = canvasH + 'px';
+
+    app.stage.scale.set(1);
+    app.stage.position.set(0, 0);
+}
+
+export function destroyGame() {
+    if (!app) {
+        return;
+    }
+
+    window.removeEventListener("resize", resize);
+    app.destroy(true, {children: true});
+    app = null;
+    gameContainer = null;
+}
