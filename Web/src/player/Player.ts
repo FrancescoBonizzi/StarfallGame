@@ -1,6 +1,14 @@
-import { AnimatedSprite, Point, Rectangle, Sprite, Ticker } from "pixi.js";
+import {
+  AnimatedSprite,
+  Container,
+  Point,
+  Rectangle,
+  Sprite,
+  Ticker,
+} from "pixi.js";
 import StarfallAssets from "../assets/StarfallAssets.ts";
 import IHasCollisionRectangle from "../IHasCollisionRectangle.ts";
+import CometParticleSystem from "../particleEmitters/CometParticleSystem.ts";
 import Camera from "../world/Camera.ts";
 import JumpGemBar from "./JumpGemBar.ts";
 import PlayerAnimations from "./PlayerAnimations.ts";
@@ -50,11 +58,12 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
   private _hitbox: typeof RUN_HITBOX | typeof JUMP_HITBOX = RUN_HITBOX;
 
   private readonly _camera: Camera;
+  private readonly _cometSystem: CometParticleSystem;
 
   readonly statesManager: StatesManager;
   readonly jumpGemBar: JumpGemBar;
 
-  constructor(assets: StarfallAssets, camera: Camera) {
+  constructor(assets: StarfallAssets, camera: Camera, hudContainer: Container) {
     this._camera = camera;
 
     this._animations = assets.player;
@@ -83,8 +92,10 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
     camera.addToWorld(this._currentAnimation);
     this._currentAnimation.play();
 
-    this.jumpGemBar = new JumpGemBar(STARTING_JUMPS);
+    this.jumpGemBar = new JumpGemBar(hudContainer, assets, STARTING_JUMPS);
     this.statesManager = new StatesManager(this, this.jumpGemBar);
+
+    this._cometSystem = new CometParticleSystem(assets, camera);
 
     // Mirror C# Player constructor: trigger initial jump to start airborne
     this.statesManager.handleJump();
@@ -199,6 +210,22 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
     }
 
     this.syncSpritePositions();
+
+    // 5. Comet particle trail (alive only — emit at sprite centre in camera-world coords)
+    if (!this._isDead) {
+      const h = this._currentAnimation.height;
+      const w = this._currentAnimation.width;
+      this._cometSystem.addParticles(
+        new Point(
+          this._position.x + w / 2,
+          this._position.y - h / 2 - GROUND_PAD,
+        ),
+      );
+    }
+
+    // 6. Tick particle and token animations (both alive and dead — let them finish)
+    this._cometSystem.update(time);
+    this.jumpGemBar.update(time);
   }
 
   // ─── Private helpers ────────────────────────────────────────────────────
@@ -219,7 +246,7 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
 
     // Ground glow: centre just below Y=0 (screen bottom), peeks from the edge
     this._glowTerraOmino.x = this._position.x + w / 2 - 22;
-    this._glowTerraOmino.y = 30; // 30 units below ground (majority off-screen, top edge visible)
+    this._glowTerraOmino.y = -GROUND_PAD; // Centred at player feet level; bottom half extends off-screen
 
     // Fade ground glow as player climbs (fully visible at ground, invisible at max altitude)
     const altitude = -this._position.y;

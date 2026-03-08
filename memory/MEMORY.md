@@ -25,7 +25,7 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 2: Assets — spritesheet JSON generati + PNG e MP3 copiati in Web/public/
 - [x] Fase 3: Game core (backgrounds, camera, game loop) — COMPLETO
 - [x] Fase 4: Player + States — COMPLETO
-- [ ] Fase 5: JumpGemBar (questa parte mi raccomando prendila ad esempio da progetto-riferimento, vedi ad esempio /hud) + CometParticles (ricordati che il ParticleSystem l'abbiamo copiato dal progetto-riferimento e riutilizziamo la classe base e noi sviluppiamo implementazioni della classe base)
+- [x] Fase 5: JumpGemBar UI token display + CometParticleSystem — COMPLETO
 - [ ] Fase 6: Gems (Good/Bad), mi raccomando, analizza come fatto nel progetto-riferimento, perché anche lì c'era lo stesso ragionamento, l'ho chiamato /gemme. + Generators + GemsManager
 - [ ] Fase 7: HUD + collisioni + score + difficoltà
 
@@ -67,7 +67,7 @@ Lavoro fatto su `Web/src/ui/styles.css` e `Web/src/pages/incipit.ts`:
 - `Game.ts` — loop con 7 layer parallax + Camera; playerVelocityX da tastiera (TEMP) per Fase 4
 
 Ordine addChild su app.stage: FillBackground → HScrollLayers(6→0) → Camera world → (HUD in Fase 7)
-Velocità parallax (multiplier=1.5): bg6=-0.9, bg5=-0.75, bg4=-0.3, bg3=0.0, bg2=0.45, bg1a=1.2, bg0=1.5
+Velocità parallax corrette (TS UV-offset formula: 1 + C#_speed×1.5): bg6=0.1, bg5=0.25, bg4=0.7, bg3=1.0, bg2=1.45, bg1a=2.2, bg0=2.5
 
 **TEMP Phase 3 rimosso in Fase 4:** `Game.ts` ora usa `player.velocityX` per il parallax.
 
@@ -89,13 +89,50 @@ Velocità parallax (multiplier=1.5): bg6=-0.9, bg5=-0.75, bg4=-0.3, bg3=0.0, bg2
 - `Game.ts` aggiornato: Controller + Player + camera X tracking (`lerp(x, player.x-134, min(1,4.8*dt))`)
 - `assets/StarfallAssets.ts` aggiornato: PlayerAnimations importato da `player/PlayerAnimations.ts`
 
-## Prossimo passo: Fase 5 — JumpGemBar UI + CometParticleSystem
+## Fix post-Fase 5 (bug visivi)
 
-Implementare:
+- `player/JumpGemBar.ts`: `TOKEN_Y` 446 → 469 (HUD bar a Y=458–480, center=469; bar sotto i piedi del player)
+- `player/Player.ts`: `_glowTerraOmino.y` 30 → `-GROUND_PAD` (-25 in camera world → screen_y≈458, visibile ai piedi)
+- `Game.ts`:
+  - **Parallax fix**: rimosso `PARALLAX_MULTIPLIER`. Formula corretta TS: `TS_speed = 1 + C#speed_×1.5`
+    Nuovi valori: bg6=0.1, bg5=0.25, bg4=0.7, bg3=1.0, bg2=1.45, bg1a=2.2, bg0=2.5
+  - **Score display**: aggiunto `_elapsedMs`, `_scoreText: ScoreText` (si aggiorna solo se player vivo)
+  - **HUD bar**: `Graphics` semitrasparente nero (800×22, y=458, alpha=0.6) su `app.stage`
+    Bar Y calcolata: `GAME_H + (-GROUND_PAD) * zoom = 480 + (-25)*0.9 ≈ 458` (subito sotto i piedi del player)
+  - Score formula: `Math.floor(elapsedMs/1000) * 10` (da aggiornare con gem count in Fase 7)
+- `hud/HudText.ts` (NUOVO): adattato da reference, usa StarfallAssets
+- `hud/ScoreText.ts` (NUOVO): adattato da reference, `updateScore(n: number)` → "Punteggio: N"
 
-1. `player/JumpGemBar.ts` — aggiungere display token (sprite animati, basarsi su /hud del riferimento)
-2. `particleEmitters/CometParticleSystem.ts` — estende ParticleSystem (come ScoreggiaParticleSystem nel riferimento)
-   - density=5, min/maxParticles=5-8, speed=80-100, acc=30-50, life=600-900ms, scale=0.1-0.7, angle=-45..235
+## Prossimo passo: Fase 6 — Gems
+
+Analizzare `/gemme` del progetto-riferimento, poi implementare:
+
+- `gems/Gem.ts`, `GoodGem.ts`, `BadGem.ts`, `GemFactory.ts`, `GemsManager.ts`
+- `gems/generators/` (5 generator files)
+
+## Fase 5 — File modificati/creati in Web/src/
+
+- `particleEmitters/CometParticleSystem.ts` (NUOVO) — estende ParticleSystem
+  - density=5, numParticles={5,8}, speed={80,100}, acceleration={30,50}
+  - rotationSpeed={-π,+π}, lifetimeSeconds={0.6,0.9}, scale={0.1,0.7}
+  - spawnAngleDegrees={-45,235}, blendMode='add'
+  - Valori 1:1 dal C# (timespan ms → secondi, tutto il resto identico)
+- `player/JumpGemBar.ts` (MODIFICATO) — aggiunta UI display token
+  - Constructor: `(container: Container, assets: StarfallAssets, startingJumps: number)`
+  - 6 sprite fissi `goodGlowFrames[0]` (74×74px, frame 0 dell'animazione goodGlow), scale=0.5, anchor=center
+  - TOKEN_START_X=160, TOKEN_GAP=6, TOKEN_Y=469 (= HUD_Y + HUD_HEIGHT/2 = 458 + 11)
+  - Spacing dinamico: `i * (tex.width * 0.5 + TOKEN_GAP)`
+  - Active: alpha=1.0, inactive: alpha=0.3, fade-in 300ms, fade-out 150ms (easeOutCubic)
+  - update(time: Ticker) guida le animazioni fade
+- `player/Player.ts` (MODIFICATO)
+  - Constructor: aggiunto `hudContainer: Container` come 3° parametro
+  - JumpGemBar riceve hudContainer + assets (crea i propri sprite lì dentro)
+  - CometParticleSystem istanziato nel costruttore; addParticles() ogni frame se vivo
+  - Emit position: `(position.x + w/2, position.y - h/2 - GROUND_PAD)` = centro sprite
+  - jumpGemBar.update() e cometSystem.update() chiamati ogni frame (anche dopo morte)
+- `Game.ts` (MODIFICATO)
+  - `new Player(assets, this._camera, app.stage)` — app.stage è hudContainer temporaneo
+  - Sarà sostituito dal container di Hud in Fase 7
 
 ## File da copiare IDENTICI dal riferimento
 
