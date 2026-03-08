@@ -39,6 +39,9 @@ const STARTING_JUMPS = 4;
 // Max altitude range for ground glow alpha fade (from C# Player.Update groundGlowAlpha)
 const GLOW_FADE_ALTITUDE = 375;
 
+// Fade duration for death animation last frame (ms)
+const DEATH_FADE_DURATION_MS = 1000;
+
 class Player implements IHasCollisionRectangle, IPlayerStateContext {
   private readonly _animations: PlayerAnimations;
   private _currentAnimation: AnimatedSprite;
@@ -53,6 +56,13 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
 
   private _onGround = false;
   private _isDead = false;
+
+  // Death sprite position: frozen at the moment of death
+  private _deathSpriteX = 0;
+  private _deathSpriteY = 0;
+  private _deathFading = false;
+  private _deathFadeComplete = false;
+  private _deathFadeElapsedMs = 0;
 
   // Current collision hitbox (switches between run/jump variant)
   private _hitbox: typeof RUN_HITBOX | typeof JUMP_HITBOX = RUN_HITBOX;
@@ -154,6 +164,11 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
     return this._isDead;
   }
 
+  /** True once the death animation has finished playing AND fully faded out. */
+  get deathFadeComplete() {
+    return this._deathFadeComplete;
+  }
+
   /** Horizontal speed; used by Game.ts to drive parallax layers. */
   get velocityX() {
     return this._vel.x;
@@ -175,11 +190,28 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
 
   die() {
     if (this._isDead) return;
+
+    // Capture the old sprite position before switching to the larger death frame.
+    // C# set DrawingInfos.Origin = center of previous frame before switching animation.
+    const oldW = this._currentAnimation.width;
+    const oldH = this._currentAnimation.height;
+    this._deathSpriteX = this._position.x;
+    this._deathSpriteY = this._position.y - oldH - GROUND_PAD;
+
     this._isDead = true;
     this._camera.removeFromWorld(this._glowOmino);
     this.setCurrentAnimation(this._animations.death);
     this._animations.death.loop = false;
-    this._vel.x = 0; // stop horizontal movement on death
+
+    // Pin death animation at the old frame's center (matches C# Origin = previousFrame.Center)
+    this._animations.death.pivot.set(oldW / 2, oldH / 2);
+
+    // When the death animation finishes, start fading out the last frame
+    this._animations.death.onComplete = () => {
+      this._deathFading = true;
+    };
+
+    this._vel.x = 0;
   }
 
   update(time: Ticker) {
@@ -211,6 +243,20 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
 
     this.syncSpritePositions();
 
+    // Death fade: after death animation completes, fade out the last frame + ground glow
+    if (this._deathFading && !this._deathFadeComplete) {
+      this._deathFadeElapsedMs += time.elapsedMS;
+      const alpha = Math.max(
+        0,
+        1 - this._deathFadeElapsedMs / DEATH_FADE_DURATION_MS,
+      );
+      this._currentAnimation.alpha = alpha;
+      this._glowTerraOmino.alpha = alpha;
+      if (alpha <= 0) {
+        this._deathFadeComplete = true;
+      }
+    }
+
     // 5. Comet particle trail (alive only — emit at sprite centre in camera-world coords)
     if (!this._isDead) {
       const h = this._currentAnimation.height;
@@ -231,6 +277,14 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
   // ─── Private helpers ────────────────────────────────────────────────────
 
   private syncSpritePositions() {
+    if (this._isDead) {
+      // Death animation: pinned at old sprite position via pivot at old center.
+      // Glow sprites stay frozen at their last pre-death positions.
+      this._currentAnimation.x = this._deathSpriteX;
+      this._currentAnimation.y = this._deathSpriteY;
+      return;
+    }
+
     const h = this._currentAnimation.height;
     const w = this._currentAnimation.width;
 

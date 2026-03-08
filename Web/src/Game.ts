@@ -42,9 +42,6 @@ const CAMERA_LERP_PER_SEC = 4.8;
 const SCORE_PER_SECOND = 10;
 const SCORE_PER_GLOW = 50;
 
-// Delay before navigating to /gameover after player death (ms)
-const GAME_OVER_DELAY_MS = 5000;
-
 class Game {
   private readonly _bgLayers: HorizontalScrollingBackground[];
   private readonly _camera: Camera;
@@ -56,6 +53,7 @@ class Game {
 
   private _elapsedMs = 0;
   private _gameOverTriggered = false;
+  private _gameOverNavigated = false;
 
   constructor(
     assets: StarfallAssets,
@@ -144,7 +142,7 @@ class Game {
       this._scoreText.updateScore(score);
     }
 
-    // Game-over: detect death once, save scores, fade gems, navigate after delay
+    // Game-over: detect death once, save scores, fade gems
     if (this._player.isDead && !this._gameOverTriggered) {
       this._gameOverTriggered = true;
       this._gemsManager.makeAllGemsDisappear();
@@ -166,10 +164,12 @@ class Game {
       if (bestJumpMs > ScoreRepository.getScore("bestJump", "record")) {
         ScoreRepository.setScore("bestJump", "record", bestJumpMs);
       }
+    }
 
-      setTimeout(() => {
-        this._onGameOver();
-      }, GAME_OVER_DELAY_MS);
+    // Navigate to gameover after death animation fade-out completes
+    if (this._player.deathFadeComplete && !this._gameOverNavigated) {
+      this._gameOverNavigated = true;
+      this._onGameOver();
     }
   }
 }
