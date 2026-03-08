@@ -101,6 +101,7 @@ main, .menu, .score, .gameover, .incipit, .protips {
     text-align: center;
     font-size: 128px;
     font-weight: bold;
+    letter-spacing: 0.06em;
 }
 
 /* pannello sinistro con fade gradiente verso destra */
@@ -216,16 +217,21 @@ canvas {
 
 .incipit-texts {
     flex: 1;
-    display: flex;
-    align-items: center;
+    position: relative;
 }
 
 .incipit-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
     opacity: 0;
     transition: opacity 2s ease-in-out;
     font-size: 32px;
     color: #ffffff;
-    padding: 8px 0;
+    padding: 8px 32px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.8);
 }
 
@@ -274,7 +280,7 @@ canvas {
 .score-value {
     font-size: 28px;
     font-weight: 700;
-    color: var(--accent);
+    color: var(--sf-gold);
 }
 
 @supports not (padding: max(0px)) { /* no-op, solo per vecchi parser */ }
@@ -399,22 +405,25 @@ canvas { display: block; }
         padding: 9px 22px;
     }
 
-    .menu { justify-content: center; }
-
     .menu-panel {
-        width: 100%;
-        align-items: center;
-        padding: 32px 24px;
-        background: rgba(11, 18, 32, 0.75);
+        width: 200px;
+        padding: 32px 20px;
+        background: linear-gradient(
+            to right,
+            rgba(11, 18, 32, 0.92) 0%,
+            rgba(11, 18, 32, 0.60) 75%,
+            rgba(11, 18, 32, 0.0) 100%
+        );
     }
 
     .menu-panel .title {
-        font-size: 60px;
-        text-align: center;
-        margin-top: 32px;
+        font-size: 36px;
+        text-align: left;
+        margin-bottom: 20px;
+        margin-top: 0;
     }
 
-    .menu-panel .menu-actions { align-items: center; }
+    .menu-panel .menu-actions { gap: 10px; }
 }
 
 @media (max-width: 400px) {
