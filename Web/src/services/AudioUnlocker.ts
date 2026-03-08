@@ -34,3 +34,6 @@ export const unlockHowler = async () => {
 
     Howler.mute(false);
 }
+
+export const isAudioUnlocked = (): boolean =>
+    Howler.ctx?.state === 'running';
