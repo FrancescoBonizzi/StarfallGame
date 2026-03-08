@@ -1,26 +1,29 @@
-import router from './router.ts';
 import ScoreRepository from "../services/ScoreRepository.ts";
 import { attachSpriteBackground } from "../services/SpriteBackground.ts";
+import router from "./router.ts";
 
 export function renderScorePage(container: HTMLElement) {
-    container.innerHTML = `
+  const bestJumpMs = ScoreRepository.getScore("bestJump", "record");
+  const bestJumpSec = (bestJumpMs / 1000).toFixed(2);
+
+  container.innerHTML = `
     <main>
       <section class="score">
         <div class="score-content">
-            <h1 class="title">Record</h1>
+            <h1 class="title">Miglior punteggio</h1>
             <div class="score-second-row">
                 <div class="score-table">
                     <div class="score-row">
-                        <div class="score-label">Miglior tempo:</div>
-                        <div class="score-value">${ScoreRepository.getScore('aliveTime', 'record')}</div>
+                        <div class="score-label">Tempo in vita:</div>
+                        <div class="score-value">${ScoreRepository.getScore("aliveTime", "record")} s</div>
                     </div>
                     <div class="score-row">
                         <div class="score-label">Glow raccolti:</div>
-                        <div class="score-value">${ScoreRepository.getScore('glows', 'record')}</div>
+                        <div class="score-value">${ScoreRepository.getScore("glows", "record")}</div>
                     </div>
                     <div class="score-row">
-                        <div class="score-label">Miglior salto:</div>
-                        <div class="score-value">${ScoreRepository.getScore('bestJump', 'record')}</div>
+                        <div class="score-label">Durata salto più lungo:</div>
+                        <div class="score-value">${bestJumpSec} s</div>
                     </div>
                 </div>
                 <nav class="menu-actions">
@@ -32,8 +35,8 @@ export function renderScorePage(container: HTMLElement) {
     </main>
   `;
 
-    router.updatePageLinks();
+  router.updatePageLinks();
 
-    const section = container.querySelector<HTMLElement>('.score')!;
-    attachSpriteBackground(section, 1, 1);
+  const section = container.querySelector<HTMLElement>(".score")!;
+  attachSpriteBackground(section, 1, 1);
 }

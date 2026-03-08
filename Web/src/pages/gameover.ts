@@ -1,11 +1,13 @@
-import router from './router.ts';
 import ScoreRepository from "../services/ScoreRepository.ts";
 import { SoundManagerInstance } from "../services/SoundInstance.ts";
 import { attachSpriteBackground } from "../services/SpriteBackground.ts";
+import router from "./router.ts";
 
 export function renderGameOverPage(container: HTMLElement) {
+  const bestJumpMs = ScoreRepository.getScore("bestJump", "gameover");
+  const bestJumpSec = (bestJumpMs / 1000).toFixed(2);
 
-    container.innerHTML = `
+  container.innerHTML = `
     <main>
       <section class="gameover">
         <div class="score-content">
@@ -14,15 +16,15 @@ export function renderGameOverPage(container: HTMLElement) {
                 <div class="score-table">
                     <div class="score-row">
                         <div class="score-label">Tempo in vita:</div>
-                        <div class="score-value">${ScoreRepository.getScore('aliveTime', 'gameover')}</div>
+                        <div class="score-value">${ScoreRepository.getScore("aliveTime", "gameover")} s</div>
                     </div>
                     <div class="score-row">
                         <div class="score-label">Glow raccolti:</div>
-                        <div class="score-value">${ScoreRepository.getScore('glows', 'gameover')}</div>
+                        <div class="score-value">${ScoreRepository.getScore("glows", "gameover")}</div>
                     </div>
                     <div class="score-row">
-                        <div class="score-label">Miglior salto:</div>
-                        <div class="score-value">${ScoreRepository.getScore('bestJump', 'gameover')}</div>
+                        <div class="score-label">Durata salto più lungo:</div>
+                        <div class="score-value">${bestJumpSec} s</div>
                     </div>
                 </div>
                 <nav class="menu-actions">
@@ -34,10 +36,10 @@ export function renderGameOverPage(container: HTMLElement) {
     </main>
   `;
 
-    router.updatePageLinks();
+  router.updatePageLinks();
 
-    const section = container.querySelector<HTMLElement>('.gameover')!;
-    attachSpriteBackground(section, 1, 1);
+  const section = container.querySelector<HTMLElement>(".gameover")!;
+  attachSpriteBackground(section, 1, 1);
 
-    SoundManagerInstance.playMenuSoundTrack();
+  SoundManagerInstance.playMenuSoundTrack();
 }
