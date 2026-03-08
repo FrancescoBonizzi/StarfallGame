@@ -1,40 +1,44 @@
-# <img src="Starfall/Assets/_TextureProject/icon.png" alt="drawing" width="72"/> Starfall
+# Starfall
 
-[<img 
-	height="60px" 
-	alt='Get it on Google Play' 
-	src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/>](https://play.google.com/store/apps/details?id=com.francescobonizzi.starfall)
-[<img 
-	height="60px"
-	src='https://assets.windowsphone.com/85864462-9c82-451e-9355-a3d5f874397a/English_get-it-from-MS_InvariantCulture_Default.png' 
-	alt='English badge' />](https://www.microsoft.com/store/apps/9MW4T75WZR28)
+![Icona di Starfall](CSharp/Starfall/Assets/_TextureProject/icon.png)
 
-You are a star fallen on the Earth. You find yourself in a dark forest looking for the way home. You are very weak. Catch all the glows to get your energy back and fly. But careful, avoid the black holes along the way trying to absorb you!
+[Gioca ora sul web](https://imaginesoftware.it/open-source-projects/starfall)
 
-Starfall is an free endless runner game, If you wish the story to continue, download and share! ;-)
+Sei una stella caduta sulla Terra. Ti ritrovi in una foresta oscura alla ricerca della strada di casa. Sei molto debole: raccogli tutte le luci per recuperare energia e tornare a volare. Ma fai attenzione ai buchi neri lungo il percorso, che cercano di assorbirti.
 
-Features:
-- A complete level with increasing difficulty
-- Three challenging elements: glows captured, fly time, game time
-- Original soundtrack
-- Handmade graphic
+Starfall e un endless runner gratuito. Se vuoi che la storia continui, giocaci e condividilo.
 
-# Screenshots
+## Caratteristiche
 
-<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/1.png" width="500">
+- Un livello completo con difficolta crescente
+- Tre elementi di sfida: luci raccolte, tempo di volo, tempo di gioco
+- Colonna sonora originale
+- Grafica realizzata a mano
 
-<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/2.png" width="500">
+## Screenshot
 
-<img src="https://github.com/FrancescoBonizzi/StarfallGame/raw/master/Starfall/Assets/_TextureProject/Screenshots/3.png" width="500">
+![Screenshot 1](CSharp/Starfall/Assets/_TextureProject/Screenshots/1.png)
+
+![Screenshot 2](CSharp/Starfall/Assets/_TextureProject/Screenshots/2.png)
+
+![Screenshot 3](CSharp/Starfall/Assets/_TextureProject/Screenshots/3.png)
 
 ---
 
-The game is entirely **free** and open source: I didn't use any third party library to track or log user events. There are no ads too.
+Il gioco è completamente **gratuito** e open source: non uso librerie di terze parti per tracciare o registrare eventi utente e non ci sono pubblicita.
 
-I coded this game with these libraries:
-- [MonoGame](https://github.com/MonoGame)
-- [FbonizziMonoGame](https://github.com/FrancescoBonizzi/FbonizziMonoGame)
+Ci sono due versioni:
+
+1. Versione CSharp, che trovi nella cartella `CSharp`.
+
+   Ho sviluppato questa versione (Android, Windows...) con queste librerie:
+   - [MonoGame](https://github.com/MonoGame)
+   - [FbonizziMonoGame](https://github.com/FrancescoBonizzi/FbonizziMonoGame)
+
+2. Versione Web, che puoi giocare [qui](https://imaginesoftware.it/open-source-projects/starfall).
+
+   Ho sviluppato questa versione con [PixiJS](https://pixijs.com/). **Supportero solo questa**.
 
 ---
 
-If you like my work, please consider to [offer me an espresso!](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DTT7P8N3TV7N6&currency_code=EUR&source=url) ;-)
+Se apprezzi il mio lavoro, puoi [offrirmi un espresso](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DTT7P8N3TV7N6&currency_code=EUR&source=url).
