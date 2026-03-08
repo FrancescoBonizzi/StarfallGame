@@ -24,11 +24,13 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 1: Primitivi + infrastruttura + menu funzionante — COMPLETO
 - [x] Fase 2: Assets — spritesheet JSON generati + PNG e MP3 copiati in Web/public/
 - [ ] Fase 3 (prossima): Game core (backgrounds, camera, game loop)
-- [ ] Fase 4: Player + States + JumpGemBar + CometParticles
-- [ ] Fase 5: Gems (Good/Bad) + Generators + GemsManager
-- [ ] Fase 6: HUD + collisioni + score + difficoltà
+- [ ] Fase 4: Player + States
+- [ ] Fase 5: JumpGemBar (questa parte mi raccomando prendila ad esempio da progetto-riferimento, vedi ad esempio /hud) + CometParticles (ricordati che il ParticleSystem l'abbiamo copiato dal progetto-riferimento e riutilizziamo la classe base e noi sviluppiamo implementazioni della classe base)
+- [ ] Fase 6: Gems (Good/Bad), mi raccomando, analizza come fatto nel progetto-riferimento, perché anche lì c'era lo stesso ragionamento, l'ho chiamato /gemme. + Generators + GemsManager
+- [ ] Fase 7: HUD + collisioni + score + difficoltà
 
 ### Fase 0+1 — File creati in Web/src/
+
 - Scaffold: `vite-env.d.ts`, `main.ts`, `ui/styles.css`
 - Assets: `assets/StarfallAssets.ts`, `assets/AssetsLoader.ts`
 - Services: `services/CollisionSolver.ts`, `Numbers.ts`, `StringHelper.ts`, `AudioUnlocker.ts`, `SoundInstance.ts`, `SoundManager.ts`, `ScoreRepository.ts`
@@ -42,6 +44,7 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - Font: `public/assets/fonts/PatrickHandSC-Regular.ttf`
 
 ### Build
+
 `tsc --noEmit` → 0 errori. `vite build` → successo.
 
 ## UI/CSS — stato attuale (styles.css)
@@ -60,6 +63,7 @@ Lavoro fatto su `Web/src/ui/styles.css` e `Web/src/pages/incipit.ts`:
 ## Prossimo passo: Fase 3 — Game core
 
 Riprendere da qui: `Game.ts` (stub vuoto esiste già), implementare:
+
 1. `background/HorizontalScrollingBackground.ts` — parallax bg0..bg7
 2. `background/FillBackground.ts`
 3. Game loop con Camera che segue X del player
