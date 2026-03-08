@@ -26,8 +26,9 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 3: Game core (backgrounds, camera, game loop) — COMPLETO
 - [x] Fase 4: Player + States — COMPLETO
 - [x] Fase 5: JumpGemBar UI token display + CometParticleSystem — COMPLETO
-- [ ] Fase 6: Gems (Good/Bad), mi raccomando, analizza come fatto nel progetto-riferimento, perché anche lì c'era lo stesso ragionamento, l'ho chiamato /gemme. + Generators + GemsManager
-- [ ] Fase 7: collisioni + difficoltà
+- [x] Fase 6: Gems (Good/Bad), Generators, GemsManager, game-over flow — COMPLETO
+- [ ] Fase 7: collisioni avanzate + difficoltà
+- [ ] Fase 8: check se manca qualcosa di sostanziale
 
 ### Fase 0+1 — File creati in Web/src/
 
@@ -103,12 +104,44 @@ Velocità parallax corrette (TS UV-offset formula: 1 + C#\_speed×1.5): bg6=0.1,
 - `hud/HudText.ts` (NUOVO): adattato da reference, usa StarfallAssets
 - `hud/ScoreText.ts` (NUOVO): adattato da reference, `updateScore(n: number)` → "Punteggio: N"
 
-## Prossimo passo: Fase 6 — Gems
+## Prossimo passo: Fase 7 — collisioni avanzate + difficoltà
 
-Analizzare `/gemme` del progetto-riferimento, poi implementare:
+- Difficulty increase: ogni 20 secondi, max 4 volte → `player.increaseMovementSpeed()` + `gemsManager.increaseDifficulty()`
+- Hud.ts opzionale (Score display già funzionante in ScoreText/HudText)
 
-- `gems/Gem.ts`, `GoodGem.ts`, `BadGem.ts`, `GemFactory.ts`, `GemsManager.ts`
-- `gems/generators/` (5 generator files)
+## Fase 6 — File creati/modificati in Web/src/
+
+- `services/Numbers.ts` (MODIFICATO) — aggiunto `generateDeltaOverTimeSin(x, min, max)`: mappa sin(x)[-1,1] a [min,max]
+- `gems/Gem.ts` (NUOVO) — classe astratta base; world Y (0=ground, negativo=su); anchor (0.5,0.5); floating Y = sin oscillation; scale oscillation; groundGlow fades with altitude; takeMe() → 200ms fade; isActive/destroy
+- `gems/GoodGem.ts` (NUOVO) — scala 0.7-1.1; attrazione magnetica (distance≤100px sticky lerp t=0.1 verso playerCollisionRectCenter)
+- `gems/BadGem.ts` (NUOVO) — scala 1.0-2.0; nessuna logica extra
+- `gems/GemFactory.ts` (NUOVO) — `createGoodGem(camera, assets, pos, player, floatSpeed?)` e `createBadGem(...)` con AnimatedSprite fresh per ogni istanza
+- `gems/generators/IGoodGemBatchGenerator.ts` + `IBadGemBatchGenerator.ts` (NUOVI) — interfacce
+- `gems/generators/GoodGemStaticYGridGenerator.ts` (NUOVO) — griglia nRows×nCols; tsWorldY = csY - 480; xStep=200, yStep=100
+- `gems/generators/GoodGemScaleGenerator.ts` (NUOVO) — 8 gems diagonale tsY=-410 step+30, x step+200
+- `gems/generators/BadGemPlayerStraightLineGenerator.ts` (NUOVO) — 1 gem a playerCenterY+50
+- `gems/generators/BadGemScreenBorderStraightLineGenerator.ts` (NUOVO) — 2 gems: y=-430 (top) e y=-80 (bottom)
+- `gems/generators/BadGemPlayerStraightLineSequenceGenerator.ts` (NUOVO) — 2 gems fissi: y=-230 x+100 e y=-100 x+500
+- `gems/GemsManager.ts` (NUOVO) — 7 good + 3 bad generators round-robin; goodInterval=1s, badInterval=4s; checkCollisions dentro update; makeAllGemsDisappear; totalGlows getter; increaseDifficulty()
+- `Game.ts` (MODIFICATO) — aggiunto GemsManager; onGameOver callback; scoreRepository.setScore su morte; setTimeout 5s → navigate; score = time*10 + glows*50; `_soundManager` rinominato `soundManager` (ora usato)
+- `pages/gamebootstrap.ts` (MODIFICATO) — import router; passa onGameOver callback con `playMenuSoundTrack()` + `router.navigate('/gameover')`
+
+### Sistema coordinate Fase 6 (scoperta critica)
+
+Camera pivot.y = 0 (il Container era vuoto quando pivot.y veniva assegnato prima di setZoom):
+
+```
+screen_y = 480 + 0.9 * worldY
+worldY = 0 → screen bottom (ground)
+worldY = -480 → near top
+tsWorldY = csharpY - 480
+```
+
+Gems spawned a `camera.x + camera.width + 31` (bordo destro schermo). No xSpeed — la camera gestisce lo scroll.
+
+### Build Fase 6
+
+`tsc --noEmit` → 0 errori. `vite build` → successo (warning dynamic import già preesistente).
 
 ## Fase 5 — File modificati/creati in Web/src/
 

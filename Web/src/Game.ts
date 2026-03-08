@@ -2,16 +2,17 @@ import { Application, Graphics, Point, Ticker } from "pixi.js";
 import StarfallAssets from "./assets/StarfallAssets.ts";
 import FillBackground from "./background/FillBackground.ts";
 import HorizontalScrollingBackground from "./background/HorizontalScrollingBackground.ts";
+import GemsManager from "./gems/GemsManager.ts";
 import ScoreText from "./hud/ScoreText.ts";
 import Controller from "./interaction/Controller.ts";
 import Player from "./player/Player.ts";
 import Numbers from "./services/Numbers.ts";
+import ScoreRepository from "./services/ScoreRepository.ts";
 import SoundManager from "./services/SoundManager.ts";
 import Camera from "./world/Camera.ts";
 
 // Width/height of the bottom HUD status bar (screen coords).
-// Player feet are at screen_y = GAME_H + (-GROUND_PAD) * zoom = 480 + (-25)*0.9 ≈ 458.
-// Bar starts right at/below feet so it does not overlap the gameplay area.
+// Player feet are at screen_y = 480 + 0.9*(−GROUND_PAD) = 480 − 22.5 ≈ 458.
 const HUD_HEIGHT = 22;
 const GAME_W = 800;
 const HUD_Y = 458; // ≈ player feet screen_y
@@ -22,13 +23,13 @@ const HUD_Y = 458; // ≈ player feet screen_y
 //   layer3=0.0, layer2=0.3, layer1=0.8, layer0=1.0
 // [backgrounds array index, TS scrollSpeed]
 const LAYER_DEFS: [number, number][] = [
-  [8, 0.1],  // bg6 – far mountains (barely moves)
+  [8, 0.1], // bg6 – far mountains (barely moves)
   [7, 0.25], // bg5
-  [6, 0.7],  // bg4
-  [5, 1.0],  // bg3 – at rest in world space
+  [6, 0.7], // bg4
+  [5, 1.0], // bg3 – at rest in world space
   [4, 1.45], // bg2
-  [1, 2.2],  // bg1a – near foreground
-  [0, 2.5],  // bg0 – closest layer
+  [1, 2.2], // bg1a – near foreground
+  [0, 2.5], // bg0 – closest layer
 ];
 
 // Camera trails the player by this offset: player appears ~134 units from camera left edge
@@ -37,8 +38,12 @@ const CAMERA_OFFSET_X = 134;
 // Frame-rate-independent lerp coefficient (≈ 0.08 per frame at 60 fps)
 const CAMERA_LERP_PER_SEC = 4.8;
 
-// Score formula: elapsed seconds × this multiplier (gems will add more in Fase 7)
+// Score formula: time bonus + gem bonus
 const SCORE_PER_SECOND = 10;
+const SCORE_PER_GLOW = 50;
+
+// Delay before navigating to /gameover after player death (ms)
+const GAME_OVER_DELAY_MS = 5000;
 
 class Game {
   private readonly _bgLayers: HorizontalScrollingBackground[];
@@ -46,14 +51,20 @@ class Game {
   private readonly _player: Player;
   private readonly _controller: Controller;
   private readonly _scoreText: ScoreText;
+  private readonly _gemsManager: GemsManager;
+  private readonly _onGameOver: () => void;
 
   private _elapsedMs = 0;
+  private _gameOverTriggered = false;
 
   constructor(
     assets: StarfallAssets,
     app: Application,
-    _soundManager: SoundManager,
+    soundManager: SoundManager,
+    onGameOver: () => void,
   ) {
+    this._onGameOver = onGameOver;
+
     const t = assets.textures.backgrounds;
 
     // Layer7: static fill background — drawn behind everything
@@ -79,20 +90,29 @@ class Game {
 
     this._controller = new Controller();
 
-    // Score text: right-aligned at HUD vertical centre (above hudBar)
+    // Score text: right-aligned at HUD vertical centre
     this._scoreText = new ScoreText(
       app.stage,
       assets,
       new Point(GAME_W - 20, 460),
     );
     this._scoreText.updateScore(0);
+
+    // Gems system: manages GoodGem/BadGem batches, generators, collision detection
+    this._gemsManager = new GemsManager(
+      this._camera,
+      assets,
+      this._player,
+      this._player.jumpGemBar,
+      soundManager,
+    );
   }
 
   update(time: Ticker) {
     const dt = time.elapsedMS / 1000;
 
-    // Jump on press
-    if (this._controller.consumePress()) {
+    // Jump on press (only while alive)
+    if (!this._player.isDead && this._controller.consumePress()) {
       this._player.statesManager.handleJump();
     }
 
@@ -112,11 +132,44 @@ class Game {
       layer.update(this._player.velocityX, dt);
     }
 
-    // Score: counts elapsed seconds while player is alive
+    // Gems: update batches + collision detection
+    this._gemsManager.update(time);
+
+    // Score: counts elapsed seconds + collected glows while player is alive
     if (!this._player.isDead) {
       this._elapsedMs += time.elapsedMS;
-      const score = Math.floor(this._elapsedMs / 1000) * SCORE_PER_SECOND;
+      const score =
+        Math.floor(this._elapsedMs / 1000) * SCORE_PER_SECOND +
+        this._gemsManager.totalGlows * SCORE_PER_GLOW;
       this._scoreText.updateScore(score);
+    }
+
+    // Game-over: detect death once, save scores, fade gems, navigate after delay
+    if (this._player.isDead && !this._gameOverTriggered) {
+      this._gameOverTriggered = true;
+      this._gemsManager.makeAllGemsDisappear();
+
+      const aliveTimeSec = Math.floor(this._elapsedMs / 1000);
+      const glows = this._gemsManager.totalGlows;
+      const bestJumpMs = Math.round(this._player.bestJumpDuration * 1000);
+
+      ScoreRepository.setScore("aliveTime", "gameover", aliveTimeSec);
+      ScoreRepository.setScore("glows", "gameover", glows);
+      ScoreRepository.setScore("bestJump", "gameover", bestJumpMs);
+
+      if (aliveTimeSec > ScoreRepository.getScore("aliveTime", "record")) {
+        ScoreRepository.setScore("aliveTime", "record", aliveTimeSec);
+      }
+      if (glows > ScoreRepository.getScore("glows", "record")) {
+        ScoreRepository.setScore("glows", "record", glows);
+      }
+      if (bestJumpMs > ScoreRepository.getScore("bestJump", "record")) {
+        ScoreRepository.setScore("bestJump", "record", bestJumpMs);
+      }
+
+      setTimeout(() => {
+        this._onGameOver();
+      }, GAME_OVER_DELAY_MS);
     }
   }
 }
