@@ -27,8 +27,8 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 4: Player + States — COMPLETO
 - [x] Fase 5: JumpGemBar UI token display + CometParticleSystem — COMPLETO
 - [x] Fase 6: Gems (Good/Bad), Generators, GemsManager, game-over flow — COMPLETO
-- [ ] Fase 7: collisioni avanzate + difficoltà
-- [ ] Fase 8: HUD + popup text che fa vedere il numero di gemme buone prese in concomitanza con quando la prendiL
+- [x] Fase 7: collisioni avanzate + difficoltà — COMPLETO
+- [x] Fase 8: HUD + popup text gem count — COMPLETO
 - [ ] Fase 9: check se manca qualcosa di sostanziale
 
 ### Fase 0+1 — File creati in Web/src/
@@ -105,10 +105,9 @@ Velocità parallax corrette (TS UV-offset formula: 1 + C#\_speed×1.5): bg6=0.1,
 - `hud/HudText.ts` (NUOVO): adattato da reference, usa StarfallAssets
 - `hud/ScoreText.ts` (NUOVO): adattato da reference, `updateScore(n: number)` → "Punteggio: N"
 
-## Prossimo passo: Fase 7 — collisioni avanzate + difficoltà
+## Prossimo passo: Fase 9 — check finale
 
-- Difficulty increase: ogni 20 secondi, max 4 volte → `player.increaseMovementSpeed()` + `gemsManager.increaseDifficulty()`
-- Hud.ts opzionale (Score display già funzionante in ScoreText/HudText)
+Verificare se manca qualcosa di sostanziale rispetto al C# originale.
 
 ## Fase 6 — File creati/modificati in Web/src/
 
