@@ -41,6 +41,11 @@ class GoodGem extends Gem {
     return 1.1;
   }
 
+  // Sinusoidal oscillation ±100px (matches C# deltaYFunctionOverTime = Numbers.GenerateDeltaOverTimeSin(x, -100, 100))
+  protected override computeFloatingOffsetY(t: number): number {
+    return Numbers.generateDeltaOverTimeSin(t, -100, 100);
+  }
+
   protected override updatePosition(dt: number): void {
     const rect = this._player.collisionRectangle;
     const playerCenterX = rect.x + rect.width / 2;

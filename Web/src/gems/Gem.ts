@@ -13,8 +13,8 @@ import Camera from "../world/Camera.ts";
 // Oscillation speed for scale breathing (matches C# _scalingSpeed = 2.5)
 const SCALE_SPEED = 2.5;
 
-// Y below ground for ground-glow sprite (matches Player GROUND_PAD)
-const GROUND_PAD = 25;
+// Ground glow fixed Y in world coords (C# viewport.VirtualHeight - 31 = 449 → TS = 449 - 480 = -31)
+const GROUND_GLOW_Y = -31;
 
 // Game height for alpha fade calculation
 const GAME_H = 480;
@@ -31,7 +31,6 @@ abstract class Gem implements IHasCollisionRectangle {
   protected _worldY: number;
   private readonly _startingWorldY: number;
   private readonly _floatingSpeed: number;
-  private readonly _amplitude: number;
   protected readonly _velocityX: number;
 
   protected _elapsedMs = 0;
@@ -54,7 +53,6 @@ abstract class Gem implements IHasCollisionRectangle {
     this._startingWorldY = position.y;
     this._floatingSpeed = floatingSpeed;
     this._velocityX = velocityX;
-    this._amplitude = Numbers.randomBetween(1, 12);
 
     this._sprite = animatedSprite;
     this._sprite.anchor.set(0.5, 0.5);
@@ -64,10 +62,10 @@ abstract class Gem implements IHasCollisionRectangle {
     this._sprite.play();
     camera.addToWorld(this._sprite);
 
+    // Ground glow: origin (0,0) matches C# Vector2.Zero origin
     this._groundGlow = new Sprite(groundGlowTexture);
-    this._groundGlow.anchor.set(0.5, 0.5);
     this._groundGlow.x = this._worldX - 62;
-    this._groundGlow.y = -GROUND_PAD;
+    this._groundGlow.y = GROUND_GLOW_Y;
     camera.addToWorld(this._groundGlow);
   }
 
@@ -75,8 +73,9 @@ abstract class Gem implements IHasCollisionRectangle {
 
   get collisionRectangle(): Rectangle {
     if (this._isTaken) return new Rectangle(0, 0, 0, 0);
-    const w = this._sprite.width;
-    const h = this._sprite.height;
+    // Use unscaled frame dimensions (matches C# which passes CurrentFrameWidth/Height)
+    const w = this._sprite.texture.width;
+    const h = this._sprite.texture.height;
     return new Rectangle(this._worldX - w / 2, this._worldY - h / 2, w, h);
   }
 
@@ -91,9 +90,9 @@ abstract class Gem implements IHasCollisionRectangle {
     return this._worldX;
   }
 
-  /** Width of the gem sprite. */
+  /** Width of the gem sprite (unscaled frame). */
   get width(): number {
-    return this._sprite.width;
+    return this._sprite.texture.width;
   }
 
   /** Mark gem as collected — starts 200ms fade-out. */
@@ -107,10 +106,10 @@ abstract class Gem implements IHasCollisionRectangle {
    */
   isActive(camera: Camera): boolean {
     if (this._isTaken && this._fadeElapsedMs >= FADE_DURATION_MS) return false;
-    // isOutOfCameraLeft expects left-edge x; our sprite is centered so adjust
+    const w = this._sprite.texture.width;
     return !camera.isOutOfCameraLeft({
-      x: this._worldX - this._sprite.width / 2,
-      width: this._sprite.width,
+      x: this._worldX - w / 2,
+      width: w,
     });
   }
 
@@ -162,12 +161,17 @@ abstract class Gem implements IHasCollisionRectangle {
   protected updatePosition(dt: number): void {
     // Horizontal: drift in world space — creates visual movement relative to camera
     this._worldX += this._velocityX * dt;
-    // Vertical: floating oscillation (matches C# deltaYFunctionOverTime = sin)
-    this._worldY =
-      this._startingWorldY +
-      Math.sin((this._elapsedMs / 1000) * this._floatingSpeed) *
-        this._amplitude;
+    // Vertical: subclass-specific function (sin oscillation for GoodGem, identity for BadGem)
+    const t = (this._elapsedMs / 1000) * this._floatingSpeed;
+    this._worldY = this._startingWorldY + this.computeFloatingOffsetY(t);
   }
+
+  /**
+   * Y-offset function, called with (elapsedSeconds * floatingSpeed).
+   * GoodGem: GenerateDeltaOverTimeSin(t, -100, 100)  — sinusoidal float ±100px
+   * BadGem:  identity(t) — slow linear drift toward ground
+   */
+  protected abstract computeFloatingOffsetY(t: number): number;
 }
 
 export default Gem;

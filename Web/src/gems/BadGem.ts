@@ -27,6 +27,11 @@ class BadGem extends Gem {
   protected override get maxScale(): number {
     return 2.0;
   }
+
+  // Identity function — slow linear drift (matches C# deltaYFunctionOverTime = x => x)
+  protected override computeFloatingOffsetY(t: number): number {
+    return t;
+  }
 }
 
 export default BadGem;
