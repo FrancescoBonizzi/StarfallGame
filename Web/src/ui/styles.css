@@ -211,27 +211,42 @@ canvas {
     flex-direction: column;
     justify-content: space-between;
     min-height: 100dvh;
-    padding: 48px 64px;
+    width: min(100%, 980px);
+    padding: clamp(20px, 6vh, 48px) clamp(16px, 6vw, 64px);
     gap: 24px;
 }
 
 .incipit-texts {
     flex: 1;
-    position: relative;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: clamp(6px, 1.8vh, 16px);
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: clamp(16px, 3.2vh, 28px);
+    border: 1px solid rgba(247, 223, 160, 0.32);
+    border-radius: 14px;
+    background: linear-gradient(
+        to bottom,
+        rgba(11, 18, 32, 0.60) 0%,
+        rgba(11, 18, 32, 0.48) 100%
+    );
+    backdrop-filter: blur(2px);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.38);
 }
 
 .incipit-text {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
     text-align: center;
+    width: 100%;
+    max-width: 28ch;
     opacity: 0;
     transition: opacity 2s ease-in-out;
-    font-size: 32px;
+    font-size: clamp(20px, 4.2vw, 32px);
+    line-height: 1.25;
+    letter-spacing: 0.01em;
     color: #ffffff;
-    padding: 8px 32px;
+    padding: 2px 4px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.8);
 }
 
@@ -424,6 +439,29 @@ canvas { display: block; }
     }
 
     .menu-panel .menu-actions { gap: 10px; }
+
+    .incipit-content {
+        gap: 16px;
+        justify-content: space-between;
+    }
+
+    .incipit-texts {
+        gap: 8px;
+        padding: 14px 12px;
+        border-radius: 12px;
+    }
+
+    .incipit-text {
+        font-size: clamp(17px, 5.1vw, 24px);
+        max-width: 30ch;
+        line-height: 1.2;
+    }
+
+    .incipit .menu-actions {
+        max-width: none;
+        width: 100%;
+        align-items: center;
+    }
 }
 
 @media (max-width: 400px) {
@@ -439,6 +477,20 @@ canvas { display: block; }
     .button {
         font-size: 20px;
         padding: 8px 12px;
+    }
+
+    .incipit-content {
+        padding: 16px 12px;
+        gap: 12px;
+    }
+
+    .incipit-texts {
+        padding: 12px 10px;
+    }
+
+    .incipit-text {
+        font-size: clamp(15px, 5.2vw, 20px);
+        max-width: 32ch;
     }
 }
 

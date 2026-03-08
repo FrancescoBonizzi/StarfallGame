@@ -43,28 +43,22 @@ export function renderIncipitPage(container: HTMLElement) {
     );
 
     const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+    const fadeInMs = 2000;
+    const holdMs = 2000;
+    const finalPauseMs = 2000;
 
     (async () => {
         for (let i = 0; i < textEls.length; i++) {
             if (animationId !== myId) return;
 
-            // Fade in current text (CSS handles the 2s transition)
+        // Reveal each line and keep it visible for a cumulative poetic effect.
             textEls[i]!.style.opacity = '1';
 
-            // Both texts visible together for a moment
-            await sleep(2500);
-            if (animationId !== myId) return;
-
-            // Fade out previous (CSS transition, not instant)
-            if (i > 0) {
-                textEls[i - 1]!.style.opacity = '0';
-            }
-
-            // Wait before next text
-            await sleep(1500);
+        await sleep(fadeInMs + holdMs);
         }
+
         if (animationId !== myId) return;
-        await sleep(2000);
+      await sleep(finalPauseMs);
         if (animationId !== myId) return;
         router.navigate('/');
     })();
