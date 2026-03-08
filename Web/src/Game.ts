@@ -2,6 +2,9 @@ import { Application, Ticker } from "pixi.js";
 import StarfallAssets from "./assets/StarfallAssets.ts";
 import FillBackground from "./background/FillBackground.ts";
 import HorizontalScrollingBackground from "./background/HorizontalScrollingBackground.ts";
+import Controller from "./interaction/Controller.ts";
+import Player from "./player/Player.ts";
+import Numbers from "./services/Numbers.ts";
 import SoundManager from "./services/SoundManager.ts";
 import Camera from "./world/Camera.ts";
 
@@ -20,21 +23,17 @@ const LAYER_DEFS: [number, number][] = [
   [0, 1.0 * PARALLAX_MULTIPLIER], // layer0 / bg0
 ];
 
-// Typical player horizontal speed (pixels/second)
-const TEST_SPEED = 400;
+// Camera trails the player by this offset: player appears ~134 units from camera left edge
+const CAMERA_OFFSET_X = 134;
+
+// Frame-rate-independent lerp coefficient (≈ 0.08 per frame at 60 fps)
+const CAMERA_LERP_PER_SEC = 4.8;
 
 class Game {
   private readonly _bgLayers: HorizontalScrollingBackground[];
-
-  // TEMP Phase 3: keyboard velocity for parallax testing — remove in Phase 4
-  private _testVX = 0;
-  private readonly _onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "ArrowRight") this._testVX = TEST_SPEED;
-    if (e.key === "ArrowLeft") this._testVX = -TEST_SPEED;
-  };
-  private readonly _onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") this._testVX = 0;
-  };
+  private readonly _camera: Camera;
+  private readonly _player: Player;
+  private readonly _controller: Controller;
 
   constructor(
     assets: StarfallAssets,
@@ -43,30 +42,45 @@ class Game {
   ) {
     const t = assets.textures.backgrounds;
 
-    // Layer7: static fill background — must be first on stage (drawn behind everything)
+    // Layer7: static fill background — drawn behind everything
     new FillBackground(t[9]!, app);
 
-    // Parallax layers — drawn over fill bg, under camera world
+    // Parallax layers — over fill bg, under camera world
     this._bgLayers = LAYER_DEFS.map(
       ([idx, speed]) => new HorizontalScrollingBackground(t[idx]!, speed, app),
     );
 
-    // Camera: constructor adds its world container to app.stage.
-    // Reference stored in Phase 4 when player + gems need camera.addToWorld().
-    new Camera(app);
+    // Camera world container added to app.stage inside Camera constructor
+    this._camera = new Camera(app);
 
-    // TEMP Phase 3: register keyboard for parallax testing
-    window.addEventListener("keydown", this._onKeyDown);
-    window.addEventListener("keyup", this._onKeyUp);
+    // Player sprite added to camera world inside Player constructor
+    this._player = new Player(assets, this._camera);
+
+    this._controller = new Controller();
   }
 
   update(time: Ticker) {
     const dt = time.elapsedMS / 1000;
-    // TEMP Phase 3: replace with player.velocity.x in Phase 4
-    const playerVelocityX = this._testVX;
 
+    // Jump on press
+    if (this._controller.consumePress()) {
+      this._player.statesManager.handleJump();
+    }
+
+    // Player physics + animation
+    this._player.update(time);
+
+    // Camera X tracks player (Y is fixed — Starfall camera follows X only)
+    const targetX = this._player.position.x - CAMERA_OFFSET_X;
+    this._camera.x = Numbers.lerp(
+      this._camera.x,
+      targetX,
+      Math.min(1, CAMERA_LERP_PER_SEC * dt),
+    );
+
+    // Parallax backgrounds scroll proportional to player horizontal speed
     for (const layer of this._bgLayers) {
-      layer.update(playerVelocityX, dt);
+      layer.update(this._player.velocityX, dt);
     }
   }
 }

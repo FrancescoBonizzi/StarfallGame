@@ -24,7 +24,7 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 1: Primitivi + infrastruttura + menu funzionante — COMPLETO
 - [x] Fase 2: Assets — spritesheet JSON generati + PNG e MP3 copiati in Web/public/
 - [x] Fase 3: Game core (backgrounds, camera, game loop) — COMPLETO
-- [ ] Fase 4 (prossima): Player + States
+- [x] Fase 4: Player + States — COMPLETO
 - [ ] Fase 5: JumpGemBar (questa parte mi raccomando prendila ad esempio da progetto-riferimento, vedi ad esempio /hud) + CometParticles (ricordati che il ParticleSystem l'abbiamo copiato dal progetto-riferimento e riutilizziamo la classe base e noi sviluppiamo implementazioni della classe base)
 - [ ] Fase 6: Gems (Good/Bad), mi raccomando, analizza come fatto nel progetto-riferimento, perché anche lì c'era lo stesso ragionamento, l'ho chiamato /gemme. + Generators + GemsManager
 - [ ] Fase 7: HUD + collisioni + score + difficoltà
@@ -69,27 +69,39 @@ Lavoro fatto su `Web/src/ui/styles.css` e `Web/src/pages/incipit.ts`:
 Ordine addChild su app.stage: FillBackground → HScrollLayers(6→0) → Camera world → (HUD in Fase 7)
 Velocità parallax (multiplier=1.5): bg6=-0.9, bg5=-0.75, bg4=-0.3, bg3=0.0, bg2=0.45, bg1a=1.2, bg0=1.5
 
-**TEMP Phase 3 — da rimuovere in Fase 4:** `Game.ts` ha `_testVX`, `_onKeyDown`, `_onKeyUp` e
-`window.addEventListener` per ArrowLeft/ArrowRight. In Fase 4 rimuovere tutto e usare `player.velocity.x`.
+**TEMP Phase 3 rimosso in Fase 4:** `Game.ts` ora usa `player.velocityX` per il parallax.
 
-## Prossimo passo: Fase 4 — Player + States
+## Fase 4 — File creati in Web/src/
+
+- `player/PlayerAnimations.ts` — interfaccia (run/jump/death AnimatedSprite)
+- `player/states/IPlayerState.ts` — interfaccia stato (handleJump, update, enter)
+- `player/states/IPlayerStateContext.ts` — interfaccia minima esposta dal Player agli stati (evita circular deps)
+- `player/states/RunningState.ts` — sta a terra, aspetta input salto
+- `player/states/JumpingState.ts` — gestisce gravità (780 units/s²), impulso salto (-410), consumo token
+- `player/states/StatesManager.ts` — macchina a stati, traccia bestJumpDuration
+- `player/JumpGemBar.ts` — token di salto (logica, UI in Fase 5): max 6, startingJumps=4
+- `player/Player.ts` — corre a velocityX=94px/s, sistema di coordinate gameY (0=ground, negative=up)
+  - `_groundWorldY = camera.worldHeight - 25` (camera world Y dove i piedi del player toccano terra)
+  - sprite.y = `_groundWorldY + gameY - spriteHeight`
+  - glow-omino + glow-terra-omino (alpha fade con altitudine)
+  - Hitbox: RunningState x=45,y=38,w=75,h=80 / JumpingState x=30,y=38,w=50,h=90
+  - Constructor chiama `statesManager.handleJump()` (come C#: inizia in aria)
+- `Game.ts` aggiornato: Controller + Player + camera X tracking (`lerp(x, player.x-134, min(1,4.8*dt))`)
+- `assets/StarfallAssets.ts` aggiornato: PlayerAnimations importato da `player/PlayerAnimations.ts`
+
+## Prossimo passo: Fase 5 — JumpGemBar UI + CometParticleSystem
 
 Implementare:
 
-1. `player/states/IPlayerState.ts`
-2. `player/states/RunningState.ts`
-3. `player/states/JumpingState.ts`
-4. `player/states/StatesManager.ts`
-5. `player/PlayerAnimations.ts`
-6. `player/Player.ts` — corre al livello ground (y≈0), gestisce salti, velocity.x usata dai layer
-7. In `Game.ts`: rimuovere codice TEMP keyboard; aggiungere campo `_camera`, `_player`, `_controller`; camera segue X del player; passare `player.velocity.x` ai layer
-8. Verifica checkpoint: player visibile che corre nel browser
+1. `player/JumpGemBar.ts` — aggiungere display token (sprite animati, basarsi su /hud del riferimento)
+2. `particleEmitters/CometParticleSystem.ts` — estende ParticleSystem (come ScoreggiaParticleSystem nel riferimento)
+   - density=5, min/maxParticles=5-8, speed=80-100, acc=30-50, life=600-900ms, scale=0.1-0.7, angle=-45..235
 
 ## Checkpoint obbligatori (aspettare approvazione)
 
 - [x] Dopo Fase 0+1: tsc + vite build puliti, menu navigabile nel browser
 - [x] Dopo Fase 3: tsc + vite build puliti, game loop gira a vuoto
-- [ ] Dopo Fase 4: player visibile che corre
+- [ ] Dopo Fase 4: player visibile che corre (checkpoint da verificare nel browser)
 
 ## File da copiare IDENTICI dal riferimento
 
