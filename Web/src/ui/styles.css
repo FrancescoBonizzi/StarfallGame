@@ -186,6 +186,7 @@ main,
   font-weight: 600;
   font-size: 20px;
   letter-spacing: 0.04em;
+  white-space: nowrap;
   display: inline-block;
   text-align: center;
   width: auto;
