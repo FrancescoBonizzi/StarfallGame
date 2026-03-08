@@ -97,12 +97,6 @@ Implementare:
 2. `particleEmitters/CometParticleSystem.ts` — estende ParticleSystem (come ScoreggiaParticleSystem nel riferimento)
    - density=5, min/maxParticles=5-8, speed=80-100, acc=30-50, life=600-900ms, scale=0.1-0.7, angle=-45..235
 
-## Checkpoint obbligatori (aspettare approvazione)
-
-- [x] Dopo Fase 0+1: tsc + vite build puliti, menu navigabile nel browser
-- [x] Dopo Fase 3: tsc + vite build puliti, game loop gira a vuoto
-- [ ] Dopo Fase 4: player visibile che corre (checkpoint da verificare nel browser)
-
 ## File da copiare IDENTICI dal riferimento
 
 Camera.ts, CollisionSolver.ts, Numbers.ts, StringHelper.ts, AudioUnlocker.ts,
