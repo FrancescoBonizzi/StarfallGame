@@ -42,21 +42,29 @@ export function renderIncipitPage(container: HTMLElement) {
         container.querySelectorAll<HTMLElement>('.incipit-text')
     );
 
+    const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+
     (async () => {
         for (let i = 0; i < textEls.length; i++) {
             if (animationId !== myId) return;
 
-            // Hide previous text instantly
+            // Fade in current text (CSS handles the 2s transition)
+            textEls[i]!.style.opacity = '1';
+
+            // Both texts visible together for a moment
+            await sleep(2500);
+            if (animationId !== myId) return;
+
+            // Fade out previous (CSS transition, not instant)
             if (i > 0) {
-                const prev = textEls[i - 1]!;
-                prev.style.transition = 'none';
-                prev.style.opacity = '0';
+                textEls[i - 1]!.style.opacity = '0';
             }
 
-            // Fade in current text
-            textEls[i]!.style.opacity = '1';
-            await new Promise<void>(r => setTimeout(r, 2000));
+            // Wait before next text
+            await sleep(1500);
         }
+        if (animationId !== myId) return;
+        await sleep(2000);
         if (animationId !== myId) return;
         router.navigate('/');
     })();

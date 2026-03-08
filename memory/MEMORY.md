@@ -44,6 +44,27 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 ### Build
 `tsc --noEmit` → 0 errori. `vite build` → successo.
 
+## UI/CSS — stato attuale (styles.css)
+
+Lavoro fatto su `Web/src/ui/styles.css` e `Web/src/pages/incipit.ts`:
+
+- Sprite background su tutte le pagine HTML tramite `services/SpriteBackground.ts`
+- `.menu-panel` a sinistra con gradiente fade verso destra (desktop), 200px su mobile
+- `.title` con `letter-spacing: 0.06em` (LL di "Starfall" leggibile)
+- `.score-value` colore `var(--sf-gold)` (non più cyan `--accent`)
+- `.incipit-texts` con `position: relative`, `.incipit-text` con `position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%)` — testi sovrapposti, nessun overflow laterale
+- Incipit JS: cross-fade tra due testi (fade-in nuovo → 2500ms entrambi visibili → fade-out vecchio → 1500ms → prossimo)
+- Media query mobile (≤600px): menu panel 200px fisso, titolo 36px left-aligned
+- Media query landscape short (≤450px height): layout orizzontale menu+score
+
+## Prossimo passo: Fase 3 — Game core
+
+Riprendere da qui: `Game.ts` (stub vuoto esiste già), implementare:
+1. `background/HorizontalScrollingBackground.ts` — parallax bg0..bg7
+2. `background/FillBackground.ts`
+3. Game loop con Camera che segue X del player
+4. Verifica checkpoint: game loop gira a vuoto nel browser
+
 ## Checkpoint obbligatori (aspettare approvazione)
 
 - [x] Dopo Fase 0+1: tsc + vite build puliti, menu navigabile nel browser
