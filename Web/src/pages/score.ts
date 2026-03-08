@@ -24,7 +24,7 @@ export function renderScorePage(container: HTMLElement) {
                     </div>
                 </div>
                 <nav class="menu-actions">
-                    <a href="/" class="button primary" data-navigo>INDIETRO</a>
+                    <a href="/" class="button primary" data-navigo>Indietro</a>
                 </nav>
             </div>
         </div>

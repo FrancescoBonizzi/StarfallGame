@@ -26,7 +26,7 @@ export function renderIncipitPage(container: HTMLElement) {
             ${incipitTexts.map(t => `<p class="incipit-text">${t}</p>`).join('\n')}
           </div>
           <nav class="menu-actions">
-            <a href="/" class="button primary" data-navigo>INDIETRO</a>
+            <a href="/" class="button primary" data-navigo>Indietro</a>
           </nav>
         </div>
       </section>
@@ -58,6 +58,6 @@ export function renderIncipitPage(container: HTMLElement) {
             await new Promise<void>(r => setTimeout(r, 2000));
         }
         if (animationId !== myId) return;
-        router.navigate('/game');
+        router.navigate('/');
     })();
 }

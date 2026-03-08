@@ -9,7 +9,7 @@ export function renderGameOverPage(container: HTMLElement) {
     <main>
       <section class="gameover">
         <div class="score-content">
-            <h1 class="title">GAME OVER</h1>
+            <h1 class="title">Game over</h1>
             <div class="score-second-row">
                 <div class="score-table">
                     <div class="score-row">
@@ -26,7 +26,7 @@ export function renderGameOverPage(container: HTMLElement) {
                     </div>
                 </div>
                 <nav class="menu-actions">
-                    <a href="/" class="button primary" data-navigo>MENU</a>
+                    <a href="/" class="button primary" data-navigo>Menu</a>
                 </nav>
             </div>
         </div>

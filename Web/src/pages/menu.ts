@@ -7,15 +7,15 @@ export function renderMenuPage(container: HTMLElement) {
     container.innerHTML = `
 <main>
     <section class="menu">
-        <div class="menu-content">
+        <div class="menu-panel">
             <h1 class="title">Starfall</h1>
             <nav class="menu-actions">
-                <a href="/game" class="button primary" data-navigo>GIOCA</a>
-                <a href="/incipit" class="button" data-navigo>STORIA</a>
-                <a href="/scores" class="button" data-navigo>PUNTEGGIO</a>
+                <a href="/game" class="button primary" data-navigo>Gioca</a>
+                <a href="/incipit" class="button" data-navigo>Storia</a>
+                <a href="/scores" class="button" data-navigo>Punteggio</a>
                 <a href="https://imaginesoftware.it/open-source-projects/starfall"
-                   class="button" target="_blank" rel="noopener">ABOUT</a>
-                <a class="button" id="audio-button">ATTIVA AUDIO</a>
+                   class="button" target="_blank" rel="noopener">About</a>
+                <a class="button" id="audio-button">Attiva audio</a>
             </nav>
         </div>
     </section>
