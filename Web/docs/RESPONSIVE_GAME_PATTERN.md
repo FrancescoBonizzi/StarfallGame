@@ -165,10 +165,12 @@ try { screen.orientation.unlock(); } catch {}
 HTML (nel template del game-wrapper):
 ```html
 <div id="orientation-overlay">
-  <div class="orientation-content">
-    <span class="rotate-icon">↻</span>
-    <p>Ruota il dispositivo</p>
-  </div>
+  <!-- Lucide: rotate-cw — ISC License — https://lucide.dev/icons/rotate-cw -->
+  <svg class="rotate-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+    <path d="M21 3v5h-5" />
+  </svg>
+  <p>Ruota il dispositivo</p>
 </div>
 ```
 
@@ -183,8 +185,9 @@ CSS:
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  gap: 16px;
   color: white;
-  font-size: 1.2rem;
+  font: 500 20px "Patrick Hand SC", cursive, sans-serif;
 }
 
 #orientation-overlay.visible {
@@ -192,15 +195,24 @@ CSS:
 }
 
 .rotate-icon {
-  font-size: 4rem;
-  animation: spin 2s linear infinite;
+  width: 4rem;
+  height: 4rem;
+  animation: rotate-hint 1.5s linear infinite;
+  transform-origin: center;
 }
 
-@keyframes spin {
+@keyframes rotate-hint {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 ```
+
+> **Nota sull'icona:** non usare caratteri Unicode (es. `↻`, `⟳`) come icona per "ruota il
+> dispositivo". Nessun glyph Unicode rappresenta chiaramente un telefono che ruota, e il
+> bounding box di un carattere è spesso asimmetrico — se si aggiunge un'animazione CSS la
+> rotazione risulta storta. Un SVG inline con un rettangolo (corpo del telefono) e una freccia
+> curva è la soluzione standard: comunica esattamente l'azione richiesta, è scalabile senza
+> perdita di qualità, e non dipende dal font di sistema.
 
 Aggiornare `resize()` per mostrare/nascondere l'overlay **e pausare il gioco**:
 ```typescript

@@ -386,8 +386,10 @@ canvas {
 }
 
 .rotate-icon {
-  font-size: 4rem;
-  animation: rotate-hint 2s linear infinite;
+  width: 4rem;
+  height: 4rem;
+  animation: rotate-hint 1.5s linear infinite;
+  transform-origin: center;
 }
 
 @keyframes rotate-hint {
