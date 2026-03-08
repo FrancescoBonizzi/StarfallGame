@@ -3,11 +3,11 @@ import StarfallAssets from "../assets/StarfallAssets.ts";
 import Numbers from "../services/Numbers.ts";
 
 const MAX_JUMPS = 6;
-const TOKEN_SCALE = 0.5;
-const TOKEN_START_X = 160;
-const TOKEN_GAP = 6;
+const TOKEN_SCALE = 0.4;
+const TOKEN_START_X = 50;
+const TOKEN_GAP = 10;
 // Screen Y for token centre: slightly above HUD bar centre for visual breathing room
-const TOKEN_Y = 464;
+const TOKEN_Y = 468;
 const ALPHA_ACTIVE = 1.0;
 const ALPHA_INACTIVE = 0.3;
 const FADE_IN_MS = 300;

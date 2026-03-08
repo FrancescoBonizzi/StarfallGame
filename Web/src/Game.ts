@@ -96,7 +96,7 @@ class Game {
     this._scoreText = new ScoreText(
       app.stage,
       assets,
-      new Point(GAME_W - 20, 460),
+      new Point(GAME_W - 20, 466),
     );
     this._scoreText.updateScore(0);
 
