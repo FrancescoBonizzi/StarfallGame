@@ -40,6 +40,8 @@ class GoodGemScaleGenerator implements IGoodGemBatchGenerator {
 
     for (let i = 0; i < GEM_COUNT; i++) {
       x += 200;
+      // Per-gem random xSpeed (C#: Numbers.RandomBetween(0.5f, 1f) per frame → 30-60/sec at 60fps)
+      const perGemXSpeed = gemVelocityX - Numbers.randomBetween(30, 60);
       gems.push(
         createGoodGem(
           this._camera,
@@ -47,7 +49,7 @@ class GoodGemScaleGenerator implements IGoodGemBatchGenerator {
           new Point(x, y),
           this._player,
           Numbers.randomBetween(2, 4),
-          gemVelocityX,
+          perGemXSpeed,
         ),
       );
       y += 30; // step toward ground (same sign as C# since Y increases toward ground)

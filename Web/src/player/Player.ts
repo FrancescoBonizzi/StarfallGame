@@ -143,8 +143,8 @@ class Player implements IHasCollisionRectangle, IPlayerStateContext {
     return new Rectangle(
       this._position.x + hb.x,
       this._position.y - this._currentAnimation.height - GROUND_PAD + hb.y,
-      hb.w,
-      hb.h,
+      this._currentAnimation.width - hb.w,
+      this._currentAnimation.height - hb.h,
     );
   }
 

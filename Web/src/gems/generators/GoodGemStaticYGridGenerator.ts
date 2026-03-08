@@ -43,6 +43,8 @@ class GoodGemStaticYGridGenerator implements IGoodGemBatchGenerator {
       let x = startX;
       const y = yStart + row * 100;
       for (let col = 0; col < this._nColumns; col++) {
+        // Per-gem random xSpeed (C#: Numbers.RandomBetween(0.5f, 1f) per frame → 30-60/sec at 60fps)
+        const perGemXSpeed = gemVelocityX - Numbers.randomBetween(30, 60);
         gems.push(
           createGoodGem(
             this._camera,
@@ -50,7 +52,7 @@ class GoodGemStaticYGridGenerator implements IGoodGemBatchGenerator {
             new Point(x, y),
             this._player,
             Numbers.randomBetween(2, 4),
-            gemVelocityX,
+            perGemXSpeed,
           ),
         );
         x += 200;
