@@ -55,6 +55,10 @@ class Game {
   private _gameOverTriggered = false;
   private _gameOverNavigated = false;
 
+  // Difficulty ramp: every 20s, max 4 times (C# _aumentoDifficoltaInterval)
+  private _difficultyStep = 0;
+  private _difficultyElapsedMs = 0;
+
   constructor(
     assets: StarfallAssets,
     app: Application,
@@ -132,6 +136,17 @@ class Game {
 
     // Gems: update batches + collision detection
     this._gemsManager.update(time);
+
+    // Difficulty ramp: every 20 seconds, max 4 times (C# _aumentoDifficoltaInterval)
+    if (!this._player.isDead && this._difficultyStep < 4) {
+      this._difficultyElapsedMs += time.elapsedMS;
+      if (this._difficultyElapsedMs >= 20_000) {
+        this._difficultyElapsedMs = 0;
+        this._difficultyStep++;
+        this._player.increaseMovementSpeed();
+        this._gemsManager.increaseDifficulty();
+      }
+    }
 
     // Score: counts elapsed seconds + collected glows while player is alive
     if (!this._player.isDead) {

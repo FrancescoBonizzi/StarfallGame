@@ -90,6 +90,11 @@ abstract class Gem implements IHasCollisionRectangle {
     return this._worldX;
   }
 
+  /** World Y (center). Used for popup text positioning. */
+  get y(): number {
+    return this._worldY;
+  }
+
   /** Width of the gem sprite (unscaled frame). */
   get width(): number {
     return this._sprite.texture.width;

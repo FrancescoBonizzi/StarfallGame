@@ -28,7 +28,7 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 5: JumpGemBar UI token display + CometParticleSystem — COMPLETO
 - [x] Fase 6: Gems (Good/Bad), Generators, GemsManager, game-over flow — COMPLETO
 - [ ] Fase 7: collisioni avanzate + difficoltà
-- [ ] Fase 8: HUD + popup text che fa vedere il numero di gemme buone prese in concomitanza con quando la prendi
+- [ ] Fase 8: HUD + popup text che fa vedere il numero di gemme buone prese in concomitanza con quando la prendiL
 - [ ] Fase 9: check se manca qualcosa di sostanziale
 
 ### Fase 0+1 — File creati in Web/src/

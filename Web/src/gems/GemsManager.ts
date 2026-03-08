@@ -1,7 +1,9 @@
-import { Ticker } from "pixi.js";
+import { Point, Ticker } from "pixi.js";
 import StarfallAssets from "../assets/StarfallAssets.ts";
+import PopupText from "../hud/PopupText.ts";
 import JumpGemBar from "../player/JumpGemBar.ts";
 import Player from "../player/Player.ts";
+import ScoreRepository from "../services/ScoreRepository.ts";
 import SoundManager from "../services/SoundManager.ts";
 import Camera from "../world/Camera.ts";
 import BadGem from "./BadGem.ts";
@@ -14,14 +16,21 @@ import GoodGemStaticYGridGenerator from "./generators/GoodGemStaticYGridGenerato
 import IBadGemBatchGenerator from "./generators/IBadGemBatchGenerator.ts";
 import IGoodGemBatchGenerator from "./generators/IGoodGemBatchGenerator.ts";
 
+// C# popup durations and colors
+const GEM_POPUP_DURATION_MS = 1000;
+const RECORD_POPUP_DURATION_MS = 2000;
+const RECORD_COLOR = 0xffea00; // yellow (C# Color(255,234,0))
+
 class GemsManager {
   private readonly _camera: Camera;
+  private readonly _assets: StarfallAssets;
   private readonly _player: Player;
   private readonly _jumpGemBar: JumpGemBar;
   private readonly _soundManager: SoundManager;
 
   private _activeGoodGems: GoodGem[] = [];
   private _activeBadGems: BadGem[] = [];
+  private _popupTexts: PopupText[] = [];
 
   private readonly _goodGenerators: IGoodGemBatchGenerator[];
   private readonly _badGenerators: IBadGemBatchGenerator[];
@@ -40,6 +49,10 @@ class GemsManager {
   private _generateGems = true;
   private _totalGlows = 0;
 
+  // Record notification: fire "Record!" once per game if player beats previous best
+  private readonly _lastGlowRecord: number;
+  private _recordNotified = false;
+
   constructor(
     camera: Camera,
     assets: StarfallAssets,
@@ -48,9 +61,11 @@ class GemsManager {
     soundManager: SoundManager,
   ) {
     this._camera = camera;
+    this._assets = assets;
     this._player = player;
     this._jumpGemBar = jumpGemBar;
     this._soundManager = soundManager;
+    this._lastGlowRecord = ScoreRepository.getScore("glows", "record");
 
     // 7 good gem generators — cycled round-robin (matches C# GemsManager sequence)
     this._goodGenerators = [
@@ -93,6 +108,7 @@ class GemsManager {
   update(time: Ticker): void {
     this._updateGoodGems(time);
     this._updateBadGems(time);
+    this._updatePopupTexts(time);
     if (!this._player.isDead) {
       this._checkCollisions();
     }
@@ -103,7 +119,7 @@ class GemsManager {
   private _checkCollisions(): void {
     const playerRect = this._player.collisionRectangle;
 
-    // Good gems: collect → add jump token + sound + score counter
+    // Good gems: collect → add jump token + sound + score counter + popup text
     for (const gem of this._activeGoodGems) {
       if (gem.isTaken) continue;
       if (playerRect.intersects(gem.collisionRectangle)) {
@@ -111,6 +127,38 @@ class GemsManager {
         this._jumpGemBar.addJump();
         this._soundManager.playTakeGem();
         this._totalGlows++;
+
+        // Popup: show current gem count at gem centre (C# PlayerGemsInteractor)
+        const gemCenter = new Point(gem.x, gem.y);
+        this._popupTexts.push(
+          new PopupText(
+            this._camera,
+            this._assets,
+            gemCenter,
+            this._totalGlows.toString(),
+            0xffffff,
+            GEM_POPUP_DURATION_MS,
+          ),
+        );
+
+        // Record notification: fire once if player beats previous glow record
+        if (
+          !this._recordNotified &&
+          this._lastGlowRecord > 0 &&
+          this._totalGlows > this._lastGlowRecord
+        ) {
+          this._recordNotified = true;
+          this._popupTexts.push(
+            new PopupText(
+              this._camera,
+              this._assets,
+              new Point(gemCenter.x, gemCenter.y - 30),
+              "Record!",
+              RECORD_COLOR,
+              RECORD_POPUP_DURATION_MS,
+            ),
+          );
+        }
       }
     }
 
@@ -170,6 +218,17 @@ class GemsManager {
           gem.destroy(this._camera);
           this._activeBadGems.splice(i, 1);
         }
+      }
+    }
+  }
+
+  private _updatePopupTexts(time: Ticker): void {
+    for (let i = this._popupTexts.length - 1; i >= 0; i--) {
+      const popup = this._popupTexts[i]!;
+      popup.update(time);
+      if (popup.isDone) {
+        popup.destroy();
+        this._popupTexts.splice(i, 1);
       }
     }
   }
