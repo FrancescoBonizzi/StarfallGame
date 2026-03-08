@@ -23,8 +23,8 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 0: Scaffold base (package.json, tsconfig, vite.config, index.html) — COMPLETO
 - [x] Fase 1: Primitivi + infrastruttura + menu funzionante — COMPLETO
 - [x] Fase 2: Assets — spritesheet JSON generati + PNG e MP3 copiati in Web/public/
-- [ ] Fase 3 (prossima): Game core (backgrounds, camera, game loop)
-- [ ] Fase 4: Player + States
+- [x] Fase 3: Game core (backgrounds, camera, game loop) — COMPLETO
+- [ ] Fase 4 (prossima): Player + States
 - [ ] Fase 5: JumpGemBar (questa parte mi raccomando prendila ad esempio da progetto-riferimento, vedi ad esempio /hud) + CometParticles (ricordati che il ParticleSystem l'abbiamo copiato dal progetto-riferimento e riutilizziamo la classe base e noi sviluppiamo implementazioni della classe base)
 - [ ] Fase 6: Gems (Good/Bad), mi raccomando, analizza come fatto nel progetto-riferimento, perché anche lì c'era lo stesso ragionamento, l'ho chiamato /gemme. + Generators + GemsManager
 - [ ] Fase 7: HUD + collisioni + score + difficoltà
@@ -40,12 +40,12 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - uiKit: `uiKit/LoadingThing.ts`
 - World: `world/Camera.ts`, `IHasCollisionRectangle.ts`
 - Pages: `pages/router.ts`, `gamebootstrap.ts`, `menu.ts`, `gameover.ts`, `score.ts`, `incipit.ts`, `protips.ts`
-- `Game.ts` (stub vuoto)
+- `Game.ts` (stub vuoto → implementato in Fase 3)
 - Font: `public/assets/fonts/PatrickHandSC-Regular.ttf`
 
-### Build
+### Build (Fase 3)
 
-`tsc --noEmit` → 0 errori. `vite build` → successo.
+`tsc --noEmit` → 0 errori. `vite build` → successo (warning dynamic import in router.ts era già presente).
 
 ## UI/CSS — stato attuale (styles.css)
 
@@ -60,19 +60,35 @@ Lavoro fatto su `Web/src/ui/styles.css` e `Web/src/pages/incipit.ts`:
 - Media query mobile (≤600px): menu panel 200px fisso, titolo 36px left-aligned
 - Media query landscape short (≤450px height): layout orizzontale menu+score
 
-## Prossimo passo: Fase 3 — Game core
+## Fase 3 — File creati in Web/src/
 
-Riprendere da qui: `Game.ts` (stub vuoto esiste già), implementare:
+- `background/FillBackground.ts` — TilingSprite statico, aggiunto a app.stage (layer7/bg7)
+- `background/HorizontalScrollingBackground.ts` — TilingSprite parallax, update(playerVelocityX, dt)
+- `Game.ts` — loop con 7 layer parallax + Camera; playerVelocityX da tastiera (TEMP) per Fase 4
 
-1. `background/HorizontalScrollingBackground.ts` — parallax bg0..bg7
-2. `background/FillBackground.ts`
-3. Game loop con Camera che segue X del player
-4. Verifica checkpoint: game loop gira a vuoto nel browser
+Ordine addChild su app.stage: FillBackground → HScrollLayers(6→0) → Camera world → (HUD in Fase 7)
+Velocità parallax (multiplier=1.5): bg6=-0.9, bg5=-0.75, bg4=-0.3, bg3=0.0, bg2=0.45, bg1a=1.2, bg0=1.5
+
+**TEMP Phase 3 — da rimuovere in Fase 4:** `Game.ts` ha `_testVX`, `_onKeyDown`, `_onKeyUp` e
+`window.addEventListener` per ArrowLeft/ArrowRight. In Fase 4 rimuovere tutto e usare `player.velocity.x`.
+
+## Prossimo passo: Fase 4 — Player + States
+
+Implementare:
+
+1. `player/states/IPlayerState.ts`
+2. `player/states/RunningState.ts`
+3. `player/states/JumpingState.ts`
+4. `player/states/StatesManager.ts`
+5. `player/PlayerAnimations.ts`
+6. `player/Player.ts` — corre al livello ground (y≈0), gestisce salti, velocity.x usata dai layer
+7. In `Game.ts`: rimuovere codice TEMP keyboard; aggiungere campo `_camera`, `_player`, `_controller`; camera segue X del player; passare `player.velocity.x` ai layer
+8. Verifica checkpoint: player visibile che corre nel browser
 
 ## Checkpoint obbligatori (aspettare approvazione)
 
 - [x] Dopo Fase 0+1: tsc + vite build puliti, menu navigabile nel browser
-- [ ] Dopo Fase 3: verifica game loop gira a vuoto nel browser
+- [x] Dopo Fase 3: tsc + vite build puliti, game loop gira a vuoto
 - [ ] Dopo Fase 4: player visibile che corre
 
 ## File da copiare IDENTICI dal riferimento
