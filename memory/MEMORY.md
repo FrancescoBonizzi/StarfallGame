@@ -27,7 +27,7 @@ Migrazione di StarfallGame da MonoGame (C#) a PixiJS (TypeScript).
 - [x] Fase 4: Player + States — COMPLETO
 - [x] Fase 5: JumpGemBar UI token display + CometParticleSystem — COMPLETO
 - [ ] Fase 6: Gems (Good/Bad), mi raccomando, analizza come fatto nel progetto-riferimento, perché anche lì c'era lo stesso ragionamento, l'ho chiamato /gemme. + Generators + GemsManager
-- [ ] Fase 7: HUD + collisioni + score + difficoltà
+- [ ] Fase 7: collisioni + difficoltà
 
 ### Fase 0+1 — File creati in Web/src/
 
@@ -67,7 +67,7 @@ Lavoro fatto su `Web/src/ui/styles.css` e `Web/src/pages/incipit.ts`:
 - `Game.ts` — loop con 7 layer parallax + Camera; playerVelocityX da tastiera (TEMP) per Fase 4
 
 Ordine addChild su app.stage: FillBackground → HScrollLayers(6→0) → Camera world → (HUD in Fase 7)
-Velocità parallax corrette (TS UV-offset formula: 1 + C#_speed×1.5): bg6=0.1, bg5=0.25, bg4=0.7, bg3=1.0, bg2=1.45, bg1a=2.2, bg0=2.5
+Velocità parallax corrette (TS UV-offset formula: 1 + C#\_speed×1.5): bg6=0.1, bg5=0.25, bg4=0.7, bg3=1.0, bg2=1.45, bg1a=2.2, bg0=2.5
 
 **TEMP Phase 3 rimosso in Fase 4:** `Game.ts` ora usa `player.velocityX` per il parallax.
 
