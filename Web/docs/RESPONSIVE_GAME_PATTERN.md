@@ -202,13 +202,33 @@ CSS:
 }
 ```
 
-Aggiornare `resize()` per mostrare/nascondere l'overlay:
+Aggiornare `resize()` per mostrare/nascondere l'overlay **e pausare il gioco**:
 ```typescript
 if (orientationOverlay) {
   const isPortrait = containerH > containerW;
   orientationOverlay.classList.toggle('visible', isPortrait);
+  if (isPortrait) {
+    app.ticker.stop();   // pausa il game loop
+  } else {
+    app.ticker.start();  // riprende il game loop
+  }
 }
 ```
+
+### Problema: il gioco va avanti mentre l'overlay è visibile
+
+Se l'utente passa in portrait durante una partita, l'overlay copre lo schermo ma il
+ticker PixiJS continua a girare: la fisica avanza, i timer scorrono, il player può morire.
+Quando l'utente ruota di nuovo in landscape si ritrova al game-over senza capire perché.
+
+**Soluzione: `app.ticker.stop()` / `app.ticker.start()`**
+
+- `app.ticker.stop()` congela il game loop al frame corrente — posizione, fisica, timer tutto
+  fermo. L'ultimo frame renderizzato rimane visibile sotto l'overlay.
+- `app.ticker.start()` riprende esattamente da dove si era fermato, senza salti.
+
+Non serve nessuna logica aggiuntiva nel Game: il ticker non chiama più `game.update()`,
+quindi il gioco è completamente sospeso.
 
 ### Perché NON usare il CSS rotation trick
 
@@ -243,5 +263,6 @@ Il CSS `transform: rotate(90deg)` sul wrapper sembra una soluzione elegante ma *
 - [ ] `ResizeObserver` invece di `window.resize`
 - [ ] `screen.orientation.lock('landscape')` in `try/catch`
 - [ ] Overlay portrait con `classList.toggle('visible', isPortrait)` in `resize()`
+- [ ] `app.ticker.stop()` quando portrait, `app.ticker.start()` quando landscape
 - [ ] Background `html/body` uguale al colore del canvas (bande nere coerenti)
 - [ ] `overflow: hidden; overscroll-behavior: none` su body

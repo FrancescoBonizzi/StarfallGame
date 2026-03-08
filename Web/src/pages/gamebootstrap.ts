@@ -10,7 +10,8 @@ const GAME_H = 480;
 
 let app: Application | null = null;
 let gameContainer: HTMLDivElement | null = null;
-let orientationMsg: HTMLParagraphElement | null = null;
+let orientationOverlay: HTMLDivElement | null = null;
+let resizeObserver: ResizeObserver | null = null;
 
 export async function initGame(container: HTMLElement) {
   if (app) {
@@ -20,9 +21,10 @@ export async function initGame(container: HTMLElement) {
   container.innerHTML = `
     <div id="game-wrapper">
         <div id="game-container"></div>
-        <p id="orientation-message">
-          Il gioco è più bello se giocato da PC!
-        </p>
+        <div id="orientation-overlay">
+          <span class="rotate-icon">↻</span>
+          <p>Ruota il dispositivo</p>
+        </div>
       </div>
   `;
 
@@ -32,8 +34,8 @@ export async function initGame(container: HTMLElement) {
     return;
   }
 
-  orientationMsg = container.querySelector<HTMLParagraphElement>(
-    "#orientation-message",
+  orientationOverlay = container.querySelector<HTMLDivElement>(
+    "#orientation-overlay",
   );
 
   app = new Application();
@@ -48,7 +50,14 @@ export async function initGame(container: HTMLElement) {
     resolution: Math.min(window.devicePixelRatio || 1, 2),
   });
 
-  window.addEventListener("resize", resize);
+  try {
+    await (screen.orientation as unknown as { lock(o: string): Promise<void> }).lock("landscape");
+  } catch {
+    // iOS Safari e altri browser non supportano questa API — gestito dall'overlay
+  }
+
+  resizeObserver = new ResizeObserver(resize);
+  resizeObserver.observe(gameContainer);
   resize();
 
   gameContainer.appendChild(app.canvas);
@@ -82,8 +91,14 @@ function resize() {
 
   if (containerW === 0 || containerH === 0) return;
 
-  if (orientationMsg) {
-    orientationMsg.style.display = containerH > containerW ? "block" : "none";
+  if (orientationOverlay) {
+    const isPortrait = containerH > containerW;
+    orientationOverlay.classList.toggle("visible", isPortrait);
+    if (isPortrait) {
+      app.ticker.stop();
+    } else {
+      app.ticker.start();
+    }
   }
 
   const scale = Math.min(containerW / GAME_W, containerH / GAME_H);
@@ -105,8 +120,13 @@ export function destroyGame() {
     return;
   }
 
-  window.removeEventListener("resize", resize);
+  resizeObserver?.disconnect();
+  resizeObserver = null;
+  try {
+    (screen.orientation as unknown as { unlock(): void }).unlock();
+  } catch {}
   app.destroy(true, { children: true });
   app = null;
   gameContainer = null;
+  orientationOverlay = null;
 }
