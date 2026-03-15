@@ -6,5 +6,5 @@ export default defineConfig({
       input: "index.html",
     },
   },
-  base: "/starfall-play", // Per nextJs
+  base: "/starfall-play/", // Per nextJs
 });
