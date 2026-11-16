@@ -49,7 +49,7 @@ Il gioco risponde su `http://localhost:5173/starfall-play/`: il percorso coincid
 ## Crediti
 
 - Codice e musica: Francesco Bonizzi
-- Grafica, fotografie e animazioni: [Marco Oppici](https://www.linkedin.com/in/marco-oppici-b43471187)
+- Sfondi in parallasse dalle sue fotografie, disegno e animazione della stella: [Marco Oppici](https://www.linkedin.com/in/marco-oppici-b43471187)
 
 ## Licenza
 
