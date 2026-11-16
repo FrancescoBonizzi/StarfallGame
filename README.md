@@ -1,44 +1,62 @@
 # Starfall
 
-![Icona di Starfall](CSharp/Starfall/Assets/_TextureProject/icon.png)
+**Sei una stella caduta sulla Terra: raccogli la luce per tornare a casa.**
 
-[Gioca ora sul web](https://imaginesoftware.it/open-source-projects/starfall)
+### [▶ Gioca ora sul web](https://imaginesoftware.it/starfall-play/)
 
-Sei una stella caduta sulla Terra. Ti ritrovi in una foresta oscura alla ricerca della strada di casa. Sei molto debole: raccogli tutte le luci per recuperare energia e tornare a volare. Ma fai attenzione ai buchi neri lungo il percorso, che cercano di assorbirti.
+Gratis, nel browser, su smartphone, tablet e PC. Nessuna installazione, nessuna pubblicità, nessun tracciamento.
 
-Starfall e un endless runner gratuito. Se vuoi che la storia continui, giocaci e condividilo.
+![Una corsa di Starfall: la stella raccoglie luci nella foresta oscura](docs/screenshots/starfall-game-screenshot-1.png)
+
+Ti ritrovi in una selva oscura in cerca della via per risalire verso casa. Sei priva di energie: ti servono le luci per recuperare le forze e riuscire a volare. Durante il cammino, però, i buchi neri cercheranno di assorbirti, e se inglobi troppo buio la tua capacità di volare si riduce.
+
+**Starfall** è un gioco a scorrimento orizzontale il cui mondo evolve nel tempo, sviluppato in un weekend insieme a [Marco Oppici](https://www.linkedin.com/in/marco-oppici-b43471187), che ha creato gli sfondi in parallasse dalle sue fotografie e ha disegnato e animato la stella. La storia completa è sulla [pagina del progetto](https://imaginesoftware.it/open-source-projects/starfall).
 
 ## Caratteristiche
 
-- Un livello completo con difficolta crescente
-- Tre elementi di sfida: luci raccolte, tempo di volo, tempo di gioco
-- Colonna sonora originale
-- Grafica realizzata a mano
+- Un livello infinito a difficoltà crescente
+- Tre elementi di sfida: luci catturate, tempo di volo, tempo di gioco
+- Colonna sonora originale, composta dallo sviluppatore
+- Disegni d'autore e composizione grafica con fotografie
+- Una breve, ma significativa storia
+- Ottimizzato per la batteria dello smartphone
 
-## Screenshot
+## Dietro le quinte
 
-![Screenshot 1](CSharp/Starfall/Assets/_TextureProject/Screenshots/1.png)
+- **Un mondo capovolto una volta sola.** La telecamera ha il perno sul fondo dello schermo: il terreno è lo zero, salire significa coordinate negative. Così la gravità è un valore positivo e l'impulso del volo uno negativo, senza segni invertiti sparsi nel codice. Vedi [`Camera.ts`](Web/src/world/Camera.ts).
+- **Una stella che attira la luce.** Quando la stella entra nel raggio d'attrazione, ogni luce colma a ogni frame il 10% della distanza che le separa: un magnetismo morbido che accelera e si aggancia. Vedi [`GoodGem.ts`](Web/src/gems/GoodGem.ts).
 
-![Screenshot 2](CSharp/Starfall/Assets/_TextureProject/Screenshots/2.png)
+![Il menù di Starfall, con la stella disegnata e animata da Marco Oppici](docs/screenshots/starfall-game-screenshot-menu.png)
 
-![Screenshot 3](CSharp/Starfall/Assets/_TextureProject/Screenshots/3.png)
+## Tecnologie
+
+La versione web, quella pubblicata, è in [`Web/`](Web): [TypeScript](https://www.typescriptlang.org), [PixiJS 8](https://pixijs.com) per la grafica, [Howler.js](https://howlerjs.com) per l'audio, [Navigo](https://github.com/krasimir/navigo) per le pagine, [Vite](https://vite.dev) per la build.
+
+La cartella [`CSharp/`](CSharp) contiene la versione originale in C# con [MonoGame](https://github.com/MonoGame) e [FbonizziMonoGame](https://github.com/FrancescoBonizzi/FbonizziMonoGame), pubblicata a suo tempo sugli store Android e Windows; le animazioni sono state create con [Spriter](https://brashmonkey.com/spriter-pro/). Resta come archivio storico e non è più mantenuta.
+
+## Avviarlo in locale
+
+Serve [Node.js](https://nodejs.org) 20.19 o successivo (lo richiede Vite 7).
+
+```bash
+cd Web
+npm install
+npm run dev
+```
+
+Il gioco risponde su `http://localhost:5173/starfall-play/`: il percorso coincide con quello di pubblicazione sul sito. `npm run build` produce la versione statica in `Web/dist`.
+
+## Crediti
+
+- Codice e musica: Francesco Bonizzi
+- Grafica, fotografie e animazioni: [Marco Oppici](https://www.linkedin.com/in/marco-oppici-b43471187)
+
+## Licenza
+
+Codice, grafica e audio sono rilasciati sotto [licenza MIT](LICENSE). I font di terze parti restano sotto le loro licenze: l'elenco è in [`THIRD-PARTY-NOTICES.md`](THIRD-PARTY-NOTICES.md).
+
+Il repository è archiviato: il gioco è concluso e non riceve più sviluppo.
 
 ---
 
-Il gioco è completamente **gratuito** e open source: non uso librerie di terze parti per tracciare o registrare eventi utente e non ci sono pubblicita.
-
-Ci sono due versioni:
-
-1. Versione CSharp, che trovi nella cartella `CSharp`.
-
-   Ho sviluppato questa versione (Android, Windows...) con queste librerie:
-   - [MonoGame](https://github.com/MonoGame)
-   - [FbonizziMonoGame](https://github.com/FrancescoBonizzi/FbonizziMonoGame)
-
-2. Versione Web, che puoi giocare [qui](https://imaginesoftware.it/open-source-projects/starfall).
-
-   Ho sviluppato questa versione con [PixiJS](https://pixijs.com/). **Supportero solo questa**.
-
----
-
-Se apprezzi il mio lavoro, puoi [offrirmi un espresso](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DTT7P8N3TV7N6&currency_code=EUR&source=url).
+Se ti è piaciuto, puoi [offrirmi un espresso](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DTT7P8N3TV7N6&currency_code=EUR&source=url) ☕
