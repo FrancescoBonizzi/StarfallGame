@@ -606,3 +606,56 @@ canvas {
     transform: none !important;
   }
 }
+
+/* Startup loader (markup in index.html): the bar runs with no percentage, the script's size is unknown. */
+.avvio {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: var(--background);
+}
+
+.avvio__logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  border-radius: 20px;
+}
+
+.avvio__barra {
+  width: 160px;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 20%, transparent);
+}
+
+.avvio__barra span {
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  animation: avvio-scorri 1.1s ease-in-out infinite;
+}
+
+@keyframes avvio-scorri {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avvio__barra span {
+    width: 100%;
+    animation: none;
+    opacity: 0.5;
+  }
+}

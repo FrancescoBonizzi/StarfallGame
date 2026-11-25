@@ -100,7 +100,13 @@
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <!-- Shown while the script downloads; the router's first render replaces it. -->
+    <div id="app">
+      <div class="avvio">
+        <img class="avvio__logo" src="/starfall-logo.png" alt="" width="96" height="96" />
+        <div class="avvio__barra" role="progressbar" aria-label="Caricamento"><span></span></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
