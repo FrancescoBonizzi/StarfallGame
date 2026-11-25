@@ -8,13 +8,21 @@ const makeKey = (type: ScoreType, source: ScoreSource) => `${ScorePrefix}-${sour
 
 export default {
     getScore: (type: ScoreType, source: ScoreSource) => {
-        const key = makeKey(type, source);
-        return toNumberOr0(localStorage.getItem(key));
+        // Con lo storage bloccato (navigazione privata, dati del sito vietati) getItem lancia: senza try
+        // menu dei punteggi e game over non si disegnerebbero.
+        try {
+            return toNumberOr0(localStorage.getItem(makeKey(type, source)));
+        } catch {
+            return 0;
+        }
     },
 
     setScore: (type: ScoreType, source: ScoreSource, value: number) => {
-        const key = makeKey(type, source);
-        localStorage.setItem(key, value.toString());
+        try {
+            localStorage.setItem(makeKey(type, source), value.toString());
+        } catch {
+            // Storage bloccato o pieno: il punteggio non si salva, la partita prosegue.
+        }
     }
 }
 

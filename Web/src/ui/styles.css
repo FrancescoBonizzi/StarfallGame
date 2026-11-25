@@ -607,7 +607,7 @@ canvas {
   }
 }
 
-/* Startup loader (markup in index.html): the bar runs with no percentage, the script's size is unknown. */
+/* Caricamento iniziale (markup in index.html): barra senza percentuale, il peso dello script non è noto. */
 .avvio {
   position: fixed;
   inset: 0;
@@ -655,7 +655,15 @@ canvas {
 @media (prefers-reduced-motion: reduce) {
   .avvio__barra span {
     width: 100%;
-    animation: none;
-    opacity: 0.5;
+    animation: avvio-pulsa 1.6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes avvio-pulsa {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0.9;
   }
 }
